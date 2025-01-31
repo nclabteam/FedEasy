@@ -1,6 +1,6 @@
 # FedEasy: Federated Learning With Ease
 
-<!-- ![FedEasy Logo](placeholder-for-logo.png) -->
+![FedEasy Logo](./docs/imgs/FedEasy_overview.svg)
 
 
 FedEasy is an intuitive powerful yet simple to use Federated Learning framework built on top of [Flower](https://flower.ai/) framework and [PyTorch](https://pytorch.org/). Our goal is to streamline the process of setting up and running federated learning experiments, making advanced machine learning techniques accessible to researchers and developers alike.
@@ -116,4 +116,18 @@ pip install isort black
 ```
 isort mak --profile=black
 black mak
+```
+
+## Citation
+
+If you use FedEasy in your research, please cite our work:
+
+```bibtex
+@software{FedEasy2025,
+  author = {Kundroo, Majid and Haider, Ghani and Khoa, Nguyen and Mamond, Abdul Wahab and Kim, Taehong},
+  title = {FedEasy: Federated Learning With Ease},
+  year = {2025},
+  url = {https://github.com/nclabteam/FedEasy},
+  version = {1.0.0}
+}
 ```
