@@ -7,6 +7,7 @@ from .cnn import (
     Net,
     SimpleCNN,
     SimpleDNN,
+    ConvNet,
 )
 from .efficientnet import EfficientNetB0
 from .fedlaw_models import ResNet18Small, ResNet20Small
