@@ -25,7 +25,9 @@ import mak
 import mak.strategies
 from mak.utils.dataset_info import dataset_info
 from mak.utils.general import set_params, test, weighted_average
-
+from mak.strategies.scaffold_strategy import ScaffoldStrategy
+from mak.servers.custom_server import ServerSaveData
+from mak.servers.scaffold_server import ScaffoldServer
 
 def get_device_and_resources(config_sim):
     # Check if GPU is available
@@ -116,8 +118,8 @@ def gen_dir_outfile_server(config):
 
     if not os.path.exists(final_dir_path):
         os.mkdir(final_dir_path)
-    # if not os.path.exists(os.path.join(final_dir_path,'models')):
-    #     os.mkdir(os.path.join(final_dir_path,'models'))
+    if not os.path.exists(os.path.join(final_dir_path,'clients')):
+        os.mkdir(os.path.join(final_dir_path,'clients'))
     # models_dir = os.path.join(final_dir_path,'models')
     now = datetime.now()
     current_time = now.strftime("%H-%M-%S")
@@ -298,6 +300,16 @@ def save_simulation_history(hist: fl.server.history.History, path):
             df[key] = column_data
     df.to_csv(os.path.join(path))
 
+def get_server(
+        strategy,
+        client_manager,
+        out_file_path,
+        target_acc
+):
+    if isinstance(strategy, ScaffoldStrategy):
+        return ScaffoldServer(strategy=strategy,client_manager=client_manager,out_file_path=out_file_path,target_acc=target_acc)
+    else:
+        return ServerSaveData(strategy=strategy,client_manager=client_manager,out_file_path=out_file_path,target_acc=target_acc)
 
 def get_strategy(
     config,
@@ -433,6 +445,16 @@ def parse_args() -> argparse.Namespace:
         type=str,
         default="./config.yaml",
         help="path to the config.yaml file.",
+    )
+    parser.add_argument(
+        "--strategy",
+        type=str,
+        help="FL Strategy/algorithm"
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        help="Seed for randomness"
     )
 
     args = parser.parse_args()
