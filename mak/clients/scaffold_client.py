@@ -11,13 +11,13 @@ class ScaffoldClient(BaseClient):
     Flwr client implementation based on Scaffold
     based on: https://github/adap/flower/blob/main/baselines/niid_bench/niid_bench/
     """
-    def __init__(self, client_id, model, trainset, valset, train_batch_size, test_batch_size, device, save_dir):
-        super().__init__(client_id, model, trainset, valset, train_batch_size, test_batch_size, device, save_dir)
-         # initialize client control variate with 0 and shape of the network parameters
+    def __init__(self, client_id, model, trainset, valset, config_sim, device, save_dir):
+        super().__init__(client_id, model, trainset, valset, config_sim, device, save_dir)
+        #initialize client control variate with 0 and shape of the network parameters
         self.client_cv = []
         for param in self.model.parameters():
             self.client_cv.append(torch.zeros(param.shape))
-        
+   
 
     def __repr__(self) -> str:
         return " Scaffold client"

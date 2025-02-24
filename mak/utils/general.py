@@ -3,6 +3,7 @@ from typing import List, Tuple
 
 import flwr as fl
 import torch
+import copy
 from flwr.common import Metrics
 
 
@@ -41,3 +42,35 @@ def weighted_average(metrics: List[Tuple[int, Metrics]]) -> Metrics:
 
     # Aggregate and return custom metric (weighted average)
     return {"accuracy": sum(accuracies) / sum(examples)}
+
+def get_unique_classes(dataloader):
+    all_labels = []
+    for batch in dataloader:
+        keys = list(batch.keys())
+        x_label, y_label = keys[0], keys[1]
+        labels = batch[y_label]
+        all_labels.extend(labels.numpy())  # Assuming labels are in tensor format
+
+    unique_classes = list(set(all_labels))
+    return unique_classes
+
+def random_pertube(model, gamma):
+    new_model = copy.deepcopy(model)
+    for p in new_model.parameters():
+        gauss = torch.normal(mean=torch.zeros_like(p), std=1)
+        if p.grad is None:
+            p.grad = gauss
+        else:
+            p.grad.data.copy_(gauss.data)
+
+    norm = torch.norm(torch.stack([p.grad.norm(p=2) for p in new_model.parameters() if p.grad is not None]), p=2)
+
+    with torch.no_grad():
+        scale = gamma / (norm + 1e-12)
+        scale = torch.clamp(scale, max=1.0)
+        for p in new_model.parameters():
+            if p.grad is not None:
+                e_w = 1.0 * p.grad * scale.to(p)
+                p.add_(e_w)
+
+    return new_model

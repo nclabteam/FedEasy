@@ -29,6 +29,10 @@ from mak.strategies.scaffold_strategy import ScaffoldStrategy
 from mak.servers.custom_server import ServerSaveData
 from mak.servers.scaffold_server import ScaffoldServer
 
+from mak.strategies.fednova_strategy import FedNovaStrategy
+from mak.servers.fednova_server import FedNovaServer
+from mak.utils.pytorch_transformations import apply_transforms_test
+
 def get_device_and_resources(config_sim):
     # Check if GPU is available
     device = torch.device(
@@ -191,6 +195,7 @@ def get_model(config, shape):
     return model
 
 
+
 def get_evaluate_fn(
     centralized_testset: Dataset,
     config_sim,
@@ -202,6 +207,7 @@ def get_evaluate_fn(
     """Return an evaluation function for centralized evaluation."""
     dataset_name = config_sim["common"]["dataset"]
     shape = dataset_info[dataset_name]["input_shape"]
+    
 
     def evaluate(
         server_round: int, parameters: fl.common.NDArrays, config: Dict[str, Scalar]
@@ -211,7 +217,7 @@ def get_evaluate_fn(
         model.to(device)
 
         # Apply transform to dataset
-        testset = centralized_testset.with_transform(apply_transforms)
+        testset = centralized_testset.with_transform(apply_transforms_test)
 
         # Disable tqdm for dataset preprocessing
         disable_progress_bar()
@@ -308,6 +314,8 @@ def get_server(
 ):
     if isinstance(strategy, ScaffoldStrategy):
         return ScaffoldServer(strategy=strategy,client_manager=client_manager,out_file_path=out_file_path,target_acc=target_acc)
+    elif isinstance(strategy, FedNovaStrategy):
+        return FedNovaServer(strategy=strategy,client_manager=client_manager,out_file_path=out_file_path,target_acc=target_acc)
     else:
         return ServerSaveData(strategy=strategy,client_manager=client_manager,out_file_path=out_file_path,target_acc=target_acc)
 
@@ -358,6 +366,9 @@ def get_strategy(
             "test_data": test_data,
             "size_weights": size_weights,
             "apply_transforms": apply_transforms,
+        },
+        "FedDM": {
+            "save_model_dir": save_model_dir,
         },
     }
 
@@ -455,6 +466,12 @@ def parse_args() -> argparse.Namespace:
         "--seed",
         type=int,
         help="Seed for randomness"
+    )
+    parser.add_argument(
+        "--noise",
+        type=float,
+        default=None,
+        help="add dp noise to data or not"
     )
 
     args = parser.parse_args()

@@ -15,8 +15,7 @@ from mak.utils.dataset_info import dataset_info
 def main():
     # Parse arguments and configs
     args = parse_args()
-    config_sim = get_config(args.config) 
-    
+    config_sim = get_config(args.config)
     seed = args.seed if args.seed else config_sim.get('common', {}).get('seed', 42)
     strategy = args.strategy if args.strategy else config_sim.get('server', {}).get('strategy', '')
     config_sim['common']['seed'] = seed

@@ -11,15 +11,16 @@ class BaseClient(fl.client.NumPyClient):
     """flwr base client implementaion"""
 
     def __init__(
-        self, client_id, model, trainset, valset, train_batch_size, test_batch_size, device, save_dir,
+        self, client_id, model, trainset, valset, config_sim, device, save_dir,
     ):
         self.client_id = client_id
+        self.config_sim = config_sim
         self.trainset = trainset
         self.valset = valset
         self.model = model
         self.device = device
-        self.train_batch_size = train_batch_size
-        self.test_batch_size = test_batch_size
+        self.train_batch_size = self.config_sim["client"]["batch_size"]
+        self.test_batch_size = config_sim["client"]["test_batch_size"]
         self.model.to(self.device)
         self.save_dir = os.path.join(save_dir,'clients')
 

@@ -8,6 +8,8 @@ class FedProxClient(BaseClient):
     Flwr client implementation based on fedprox
     The train loop is changed based on fedprox algorithm
     """
+    def __init__(self, client_id, model, trainset, valset, config_sim, device, save_dir):
+        super().__init__(client_id, model, trainset, valset, config_sim, device, save_dir)
 
     def __repr__(self) -> str:
         return " FedProx client"

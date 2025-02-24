@@ -11,8 +11,6 @@ def get_client_fn(
 ):
     strategy = config_sim["server"]["strategy"].lower()
     client_class = get_client_class(strategy)
-    train_batch_size = config_sim["client"]["batch_size"]
-    test_batch_size = config_sim["client"]["test_batch_size"]
 
     def client_fn(cid: str) -> fl.client.Client:
         client_dataset = dataset.load_partition(int(cid), "train")
@@ -24,8 +22,7 @@ def get_client_fn(
             model=model,
             trainset=trainset,
             valset=valset,
-            train_batch_size=train_batch_size,
-            test_batch_size=test_batch_size,
+            config_sim = config_sim,
             device=device,
             save_dir=save_dir,
         ).to_client()
