@@ -4,6 +4,7 @@ from flwr_datasets import FederatedDataset
 from mak.clients.fedavg_client import FedAvgClient
 from mak.clients.fedprox_client import FedProxClient
 from mak.clients.scaffold_client import ScaffoldClient
+from mak.clients.fednova_client import FedNovaClient
 
 
 def get_client_fn(
@@ -35,5 +36,7 @@ def get_client_class(strategy: str):
         return FedProxClient
     elif strategy == 'scaffold':
         return ScaffoldClient
+    elif strategy == 'fednova':
+        return FedNovaClient
     else:
         return FedAvgClient
