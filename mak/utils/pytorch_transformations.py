@@ -2,6 +2,29 @@ from torchvision.transforms import Compose, Normalize, ToTensor, Lambda, ToPILIm
 import torch.nn.functional as F
 from torch.autograd import Variable
 
+def apply_transforms_scaffold(batch):
+    """Apply transforms to the partition from FederatedDataset.
+    Transformations based on scaffold flwr baseline implementation
+    """
+    pytorch_transforms = Compose(
+        [
+            ToTensor(),
+                Lambda(
+                    lambda x: F.pad(
+                        Variable(x.unsqueeze(0), requires_grad=False),
+                        (4, 4, 4, 4),
+                        mode="reflect",
+                    ).data.squeeze()
+                ),
+                ToPILImage(),
+                RandomCrop(32),
+                RandomHorizontalFlip(),
+                ToTensor(),
+        ]
+    )
+    batch["img"] = [pytorch_transforms(img) for img in batch["img"]]
+    return batch
+
 
 def apply_transforms_cifar10(batch):
     """Apply transforms to the partition from FederatedDataset."""

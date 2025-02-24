@@ -25,10 +25,15 @@ import mak
 import mak.strategies
 from mak.utils.dataset_info import dataset_info
 from mak.utils.general import set_params, test, weighted_average
+from mak.utils.pytorch_transformations import apply_transforms_test
+
 from mak.strategies.scaffold_strategy import ScaffoldStrategy
 from mak.servers.custom_server import ServerSaveData
 from mak.servers.scaffold_server import ScaffoldServer
-from mak.utils.pytorch_transformations import apply_transforms_test
+
+from mak.strategies.fednova_strategy import FedNovaStrategy
+from mak.servers.fednova_server import FedNovaServer
+
 
 def get_device_and_resources(config_sim):
     # Check if GPU is available
@@ -311,6 +316,8 @@ def get_server(
 ):
     if isinstance(strategy, ScaffoldStrategy):
         return ScaffoldServer(strategy=strategy,client_manager=client_manager,out_file_path=out_file_path,target_acc=target_acc)
+    elif isinstance(strategy, FedNovaStrategy):
+        return FedNovaServer(strategy=strategy,client_manager=client_manager,out_file_path=out_file_path,target_acc=target_acc)
     else:
         return ServerSaveData(strategy=strategy,client_manager=client_manager,out_file_path=out_file_path,target_acc=target_acc)
 
