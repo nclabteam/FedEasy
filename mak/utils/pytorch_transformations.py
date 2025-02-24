@@ -1,12 +1,12 @@
-from torchvision.transforms import Compose, Normalize, ToTensor
+from torchvision.transforms import Compose, Normalize, ToTensor, Lambda, ToPILImage,RandomCrop, RandomHorizontalFlip
+import torch.nn.functional as F
+from torch.autograd import Variable
 
 
 def apply_transforms_cifar10(batch):
     """Apply transforms to the partition from FederatedDataset."""
     pytorch_transforms = Compose(
         [
-            # Resize(256),
-            # CenterCrop(224),
             ToTensor(),
             Normalize(
                 mean=[0.49139968, 0.48215827, 0.44653124],
@@ -22,13 +22,20 @@ def apply_transforms_default(batch):
     """Apply transforms to the partition from FederatedDataset."""
     pytorch_transforms = Compose(
         [
-            # Resize(256),
-            # CenterCrop(224),
             ToTensor(),
-            # Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ]
     )
     batch["image"] = [pytorch_transforms(img) for img in batch["image"]]
+    return batch
+
+def apply_transforms_test(batch):
+    """Apply transforms to the partition from FederatedDataset."""
+    pytorch_transforms = Compose(
+        [
+            ToTensor(),
+        ]
+    )
+    batch["img"] = [pytorch_transforms(img) for img in batch["img"]]
     return batch
 
 

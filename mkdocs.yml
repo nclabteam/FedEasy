@@ -17,6 +17,7 @@ nav:
   - Models : models.md
   - Strategies: strategies.md
   - Losses: losses.md
+  - Multi-Node Example : multi_node.md
   - Contributing: contributing.md
   - License: license.md
 

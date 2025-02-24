@@ -39,12 +39,12 @@ If You already have conda installed skip step 4 and 5.
 ```bash
     conda env create -f environment.yaml
 ```
-It will create a virtual env named `venv-flwr` based on `environment.yaml` file
+It will create a virtual env named `venv-fedeasy` based on `environment.yaml` file
 
 7. For using virtual environment we need to activate the environment first.
 ```bash
     conda deactivate
-    conda activate venv-flwr
+    conda activate venv-fedeasy
 ```
 8. We can change the confugration as per our need in config.yaml file
 

@@ -25,7 +25,13 @@ import mak
 import mak.strategies
 from mak.utils.dataset_info import dataset_info
 from mak.utils.general import set_params, test, weighted_average
+from mak.strategies.scaffold_strategy import ScaffoldStrategy
+from mak.servers.custom_server import ServerSaveData
+from mak.servers.scaffold_server import ScaffoldServer
 
+from mak.strategies.fednova_strategy import FedNovaStrategy
+from mak.servers.fednova_server import FedNovaServer
+from mak.utils.pytorch_transformations import apply_transforms_test
 
 def get_device_and_resources(config_sim):
     # Check if GPU is available
@@ -57,6 +63,7 @@ def get_device_and_resources(config_sim):
         "num_gpus": config_sim["client"]["num_gpus"] if device.type == "cuda" else 0.0,
     }
     if config_sim["common"]["multi_node"]:
+        ray_init_args = {}
         ray_init_args["address"] = "auto"
         ray_init_args["runtime_env"] = {"py_modules": [mak]}
     return device, ray_init_args, client_res
@@ -115,8 +122,8 @@ def gen_dir_outfile_server(config):
 
     if not os.path.exists(final_dir_path):
         os.mkdir(final_dir_path)
-    # if not os.path.exists(os.path.join(final_dir_path,'models')):
-    #     os.mkdir(os.path.join(final_dir_path,'models'))
+    if not os.path.exists(os.path.join(final_dir_path,'clients')):
+        os.mkdir(os.path.join(final_dir_path,'clients'))
     # models_dir = os.path.join(final_dir_path,'models')
     now = datetime.now()
     current_time = now.strftime("%H-%M-%S")
@@ -188,6 +195,7 @@ def get_model(config, shape):
     return model
 
 
+
 def get_evaluate_fn(
     centralized_testset: Dataset,
     config_sim,
@@ -199,6 +207,7 @@ def get_evaluate_fn(
     """Return an evaluation function for centralized evaluation."""
     dataset_name = config_sim["common"]["dataset"]
     shape = dataset_info[dataset_name]["input_shape"]
+    
 
     def evaluate(
         server_round: int, parameters: fl.common.NDArrays, config: Dict[str, Scalar]
@@ -208,7 +217,7 @@ def get_evaluate_fn(
         model.to(device)
 
         # Apply transform to dataset
-        testset = centralized_testset.with_transform(apply_transforms)
+        testset = centralized_testset.with_transform(apply_transforms_test)
 
         # Disable tqdm for dataset preprocessing
         disable_progress_bar()
@@ -297,6 +306,18 @@ def save_simulation_history(hist: fl.server.history.History, path):
             df[key] = column_data
     df.to_csv(os.path.join(path))
 
+def get_server(
+        strategy,
+        client_manager,
+        out_file_path,
+        target_acc
+):
+    if isinstance(strategy, ScaffoldStrategy):
+        return ScaffoldServer(strategy=strategy,client_manager=client_manager,out_file_path=out_file_path,target_acc=target_acc)
+    elif isinstance(strategy, FedNovaStrategy):
+        return FedNovaServer(strategy=strategy,client_manager=client_manager,out_file_path=out_file_path,target_acc=target_acc)
+    else:
+        return ServerSaveData(strategy=strategy,client_manager=client_manager,out_file_path=out_file_path,target_acc=target_acc)
 
 def get_strategy(
     config,
@@ -435,6 +456,22 @@ def parse_args() -> argparse.Namespace:
         type=str,
         default="./config.yaml",
         help="path to the config.yaml file.",
+    )
+    parser.add_argument(
+        "--strategy",
+        type=str,
+        help="FL Strategy/algorithm"
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        help="Seed for randomness"
+    )
+    parser.add_argument(
+        "--noise",
+        type=float,
+        default=None,
+        help="add dp noise to data or not"
     )
 
     args = parser.parse_args()

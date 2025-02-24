@@ -1,6 +1,7 @@
 import torch
 import torch.nn.functional as F
 from torch import nn
+from typing import Tuple
 
 from mak.models.base_model import Model
 
@@ -77,6 +78,85 @@ class CifarNet(Model):
             x = self.pool(F.relu(self.conv2(x)))
             return x.numel()
 
+class ConvNet(Model):
+    """
+    Convolutional Neural Network (CNN) class with specific layer structure.
+
+    Attributes:
+        features (nn.Sequential): A sequence of convolutional blocks each consisting of 
+            Conv2d, GroupNorm, ReLU, and AvgPool2d layers.
+        classifier (nn.Linear): The final fully connected layer for classification.
+    """
+
+    def __init__(self, input_shape: Tuple, num_classes: int, weights=None, *args, **kwargs):
+        """
+        Initialize the ConvNet model.
+
+        Args:
+            input_shape (Tuple): The shape of the input tensor (channels, height, width).
+            num_classes (int): The number of classes in the classification task.
+            weights (str, optional): Path to the pre-trained weights file. Defaults to None.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            None
+        """
+        super(ConvNet, self).__init__(num_classes, *args, **kwargs)
+
+        self.features = nn.Sequential(
+            nn.Conv2d(input_shape[0], 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)),
+            nn.GroupNorm(128, 128, eps=1e-05, affine=True),
+            nn.ReLU(inplace=True),
+            nn.AvgPool2d(kernel_size=2, stride=2, padding=0),
+            nn.Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)),
+            nn.GroupNorm(128, 128, eps=1e-05, affine=True),
+            nn.ReLU(inplace=True),
+            nn.AvgPool2d(kernel_size=2, stride=2, padding=0),
+            nn.Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)),
+            nn.GroupNorm(128, 128, eps=1e-05, affine=True),
+            nn.ReLU(inplace=True),
+            nn.AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+
+        # Calculate the feature size after the last pooling layer
+        self.feature_size = self._calculate_feature_size(input_shape)
+
+        self.classifier = nn.Linear(self.feature_size, num_classes)
+
+        if weights is not None:
+            self.load_state_dict(torch.load(weights), strict=True)
+            self.pretrained = True
+
+    def _calculate_feature_size(self, shape):
+        """
+        Calculate the number of features after the last pooling layer.
+
+        Args:
+            shape (Tuple): The shape of the input tensor (channels, height, width).
+
+        Returns:
+            int: The total number of features.
+        """
+        with torch.no_grad():
+            x = torch.zeros(1, *shape)
+            x = self.features(x)
+            return x.numel()
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Forward pass of the ConvNet model.
+
+        Args:
+            x (torch.Tensor): Input tensor.
+
+        Returns:
+            torch.Tensor: Output tensor.
+        """
+        x = self.features(x)
+        x = torch.flatten(x, 1)
+        x = self.classifier(x)
+        return x
 
 class Net(Model):
     """
