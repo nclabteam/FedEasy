@@ -1,5 +1,3 @@
-from mak.utils.helper import get_config, set_seed, parse_args
-
 import flwr as fl
 from logging import INFO
 from flwr.common.logger import log
@@ -10,6 +8,7 @@ from mak.utils.helper import gen_dir_outfile_server, get_model, get_strategy,get
 from mak.utils.pytorch_transformations import get_transformations
 from mak.clients import get_client_fn
 from mak.utils.dataset_info import dataset_info
+from mak.utils.helper import get_config, set_seed, parse_args
 
 
 def main():
