@@ -367,8 +367,8 @@ def get_strategy(
             "size_weights": size_weights,
             "apply_transforms": apply_transforms,
         },
-        "FedDM": {
-            "save_model_dir": save_model_dir,
+        "PowD": {
+            "candidate_client_set": config["powd_config"]["candidate_client_set"],
         },
     }
 

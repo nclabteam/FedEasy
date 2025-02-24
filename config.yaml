@@ -20,7 +20,7 @@ server:
   min_fit_clients: 2
   num_clients : 20  # total number of clients participating in training
   fraction_evaluate : 0.2
-  strategy : FedAvg  #[FedLaw, FedProx, FedAvgM, FedOpt, FedAdam, FedMedian, FedAvg,]
+  strategy : FedAvg  #[FedLaw, FedProx, FedAvgM, FedOpt, FedAdam, FedMedian, FedAvg, PowD]
 
 client:
   loss: CrossEntropyLoss # [CrossEntropyLoss, FocalLoss]
@@ -44,4 +44,5 @@ fedlaw_config:
 fedprox:
   proximal_mu : 0.5
 
-
+powd_config:
+  candidate_client_set: 10 # the d parameter (client fraction ≤ d ≤ total clients)
