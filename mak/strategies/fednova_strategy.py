@@ -16,28 +16,49 @@ from flwr.server.client_proxy import ClientProxy
 from flwr.server.strategy import FedAvg
 from flwr.server.strategy.aggregate import aggregate
 
+
 class FedNovaStrategy(FedAvg):
     """Implement custom strategy for FedNova based on.
     https://github.com/adap/flower/blob/main/baselines/niid_bench/niid_bench/strategy.py
     """
-    def __init__(self, *, fraction_fit = 1, fraction_evaluate = 1, min_fit_clients = 2,
-                min_evaluate_clients = 2, min_available_clients = 2, evaluate_fn = None,
-                on_fit_config_fn = None, on_evaluate_config_fn = None, accept_failures = True,
-                initial_parameters = None, fit_metrics_aggregation_fn = None,
-                evaluate_metrics_aggregation_fn = None, inplace = True):
-        super().__init__(fraction_fit=fraction_fit, fraction_evaluate=fraction_evaluate,
-                         min_fit_clients=min_fit_clients, min_evaluate_clients=min_evaluate_clients,
-                         min_available_clients=min_available_clients, evaluate_fn=evaluate_fn,
-                         on_fit_config_fn=on_fit_config_fn, on_evaluate_config_fn=on_evaluate_config_fn,
-                         accept_failures=accept_failures, initial_parameters=initial_parameters,
-                         fit_metrics_aggregation_fn=fit_metrics_aggregation_fn,
-                         evaluate_metrics_aggregation_fn=evaluate_metrics_aggregation_fn, inplace=inplace)
 
-    
+    def __init__(
+        self,
+        *,
+        fraction_fit=1,
+        fraction_evaluate=1,
+        min_fit_clients=2,
+        min_evaluate_clients=2,
+        min_available_clients=2,
+        evaluate_fn=None,
+        on_fit_config_fn=None,
+        on_evaluate_config_fn=None,
+        accept_failures=True,
+        initial_parameters=None,
+        fit_metrics_aggregation_fn=None,
+        evaluate_metrics_aggregation_fn=None,
+        inplace=True
+    ):
+        super().__init__(
+            fraction_fit=fraction_fit,
+            fraction_evaluate=fraction_evaluate,
+            min_fit_clients=min_fit_clients,
+            min_evaluate_clients=min_evaluate_clients,
+            min_available_clients=min_available_clients,
+            evaluate_fn=evaluate_fn,
+            on_fit_config_fn=on_fit_config_fn,
+            on_evaluate_config_fn=on_evaluate_config_fn,
+            accept_failures=accept_failures,
+            initial_parameters=initial_parameters,
+            fit_metrics_aggregation_fn=fit_metrics_aggregation_fn,
+            evaluate_metrics_aggregation_fn=evaluate_metrics_aggregation_fn,
+            inplace=inplace,
+        )
+
     def aggregate_fit(
         self,
         server_round: int,
-        server_params : NDArrays,
+        server_params: NDArrays,
         results: List[Tuple[ClientProxy, FitRes]],
         failures: List[Union[Tuple[ClientProxy, FitRes], BaseException]],
     ) -> Tuple[Optional[Parameters], Dict[str, Scalar]]:
@@ -47,8 +68,8 @@ class FedNovaStrategy(FedAvg):
         # Do not aggregate if there are failures and failures are not accepted
         if not self.accept_failures and failures:
             return None, {}
-        
-         # Convert results
+
+        # Convert results
         weights_results = [
             (parameters_to_ndarrays(fit_res.parameters), fit_res.num_examples)
             for _, fit_res in results
@@ -65,9 +86,8 @@ class FedNovaStrategy(FedAvg):
             for result, (_, fit_res) in zip(weights_results, results)
         ]
 
-        
         grad_updates_aggregated = aggregate_fednova(new_weights_results)
-       
+
         aggregated = [
             server_param - grad_update
             for server_param, grad_update in zip(server_params, grad_updates_aggregated)

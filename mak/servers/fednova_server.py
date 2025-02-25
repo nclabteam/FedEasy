@@ -17,12 +17,11 @@
 
 import concurrent.futures
 import csv
-import torch
 import timeit
 from logging import DEBUG, INFO
 from typing import Dict, List, Optional, Tuple, Union
-from torch.optim import SGD
 
+import torch
 from flwr.common import (
     Code,
     DisconnectRes,
@@ -33,8 +32,8 @@ from flwr.common import (
     Parameters,
     ReconnectIns,
     Scalar,
-    parameters_to_ndarrays,
     ndarrays_to_parameters,
+    parameters_to_ndarrays,
 )
 from flwr.common.logger import log
 from flwr.common.typing import GetParametersIns
@@ -42,6 +41,7 @@ from flwr.server.client_manager import ClientManager
 from flwr.server.client_proxy import ClientProxy
 from flwr.server.history import History
 from flwr.server.strategy import FedAvg, Strategy
+from torch.optim import SGD
 
 from mak.servers.custom_server import ServerSaveData, fit_clients
 
@@ -61,11 +61,18 @@ ReconnectResultsAndFailures = Tuple[
 
 class FedNovaServer(ServerSaveData):
     """FedNova server customised to save data of rounds in csv files.
-   from https://github.com/adap/flower/blob/main/baselines/niid_bench/niid_bench/
+    from https://github.com/adap/flower/blob/main/baselines/niid_bench/niid_bench/
     """
 
-    def __init__(self, *, client_manager, strategy = None, out_file_path=None, target_acc=0.85):
-        super().__init__(client_manager=client_manager, strategy=strategy, out_file_path=out_file_path, target_acc=target_acc)
+    def __init__(
+        self, *, client_manager, strategy=None, out_file_path=None, target_acc=0.85
+    ):
+        super().__init__(
+            client_manager=client_manager,
+            strategy=strategy,
+            out_file_path=out_file_path,
+            target_acc=target_acc,
+        )
 
         st = f"Using Custom Save Data Server (FedNova) with strategy : {self.strategy.__class__}"
         log(INFO, st)
@@ -115,10 +122,7 @@ class FedNovaServer(ServerSaveData):
         aggregated_result: Tuple[
             Optional[Parameters],
             Dict[str, Scalar],
-        ] = self.strategy.aggregate_fit(
-            server_round, params_np, results, failures
-        )
+        ] = self.strategy.aggregate_fit(server_round, params_np, results, failures)
 
         parameters_aggregated, metrics_aggregated = aggregated_result
         return parameters_aggregated, metrics_aggregated, (results, failures)
-

@@ -117,6 +117,10 @@ pip install isort black
 isort mak --profile=black
 black mak
 ```
+or 
+```
+bash code_formatting.sh
+```
 
 ## Citation
 

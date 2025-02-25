@@ -166,5 +166,6 @@ dataset/
 *.ipynb
 *.txt
 *.sh
+!code_formatting.sh
 ./config.yaml
 config.yaml

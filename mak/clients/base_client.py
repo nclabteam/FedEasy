@@ -1,6 +1,7 @@
+import os
+
 import flwr as fl
 import torch
-import os
 from torch.utils.data import DataLoader
 
 from mak.utils.general import set_params, test
@@ -11,7 +12,14 @@ class BaseClient(fl.client.NumPyClient):
     """flwr base client implementaion"""
 
     def __init__(
-        self, client_id, model, trainset, valset, config_sim, device, save_dir,
+        self,
+        client_id,
+        model,
+        trainset,
+        valset,
+        config_sim,
+        device,
+        save_dir,
     ):
         self.client_id = client_id
         self.config_sim = config_sim
@@ -22,7 +30,7 @@ class BaseClient(fl.client.NumPyClient):
         self.train_batch_size = self.config_sim["client"]["batch_size"]
         self.test_batch_size = config_sim["client"]["test_batch_size"]
         self.model.to(self.device)
-        self.save_dir = os.path.join(save_dir,'clients')
+        self.save_dir = os.path.join(save_dir, "clients")
 
     def __repr__(self) -> str:
         return " Flwr base client"

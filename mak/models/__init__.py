@@ -1,13 +1,13 @@
 from .cnn import (
     MNISTCNN,
     CifarNet,
+    ConvNet,
     FedAVGCNN,
     FMCNNModel,
     KerasExpCNN,
     Net,
     SimpleCNN,
     SimpleDNN,
-    ConvNet,
 )
 from .efficientnet import EfficientNetB0
 from .fedlaw_models import ResNet18Small, ResNet20Small
