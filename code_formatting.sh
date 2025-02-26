@@ -3,6 +3,7 @@
 # List of directories and files to format
 TARGETS=(
     "mak"
+    "analysis.py"
 )
 
 # Iterate over each target and apply isort and black
