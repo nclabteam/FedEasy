@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONFIG_FILE="./configs/benchmark.yaml"
+CONFIG_FILE="./examples/sample_configs/benchmark.yaml"
 
 # Define the list of algorithms
 algorithms=(FedAvg FedProx FedAvgM FedNova Scaffold FedMedian FedAdam FedOpt FedLaw PowD)
