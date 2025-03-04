@@ -2,13 +2,18 @@ import flwr as fl
 from flwr_datasets import FederatedDataset
 
 from mak.clients.fedavg_client import FedAvgClient
+from mak.clients.fednova_client import FedNovaClient
 from mak.clients.fedprox_client import FedProxClient
 from mak.clients.scaffold_client import ScaffoldClient
-from mak.clients.fednova_client import FedNovaClient
 
 
 def get_client_fn(
-    config_sim: dict, dataset: FederatedDataset, model, device, apply_transforms, save_dir
+    config_sim: dict,
+    dataset: FederatedDataset,
+    model,
+    device,
+    apply_transforms,
+    save_dir,
 ):
     strategy = config_sim["server"]["strategy"].lower()
     client_class = get_client_class(strategy)
@@ -23,7 +28,7 @@ def get_client_fn(
             model=model,
             trainset=trainset,
             valset=valset,
-            config_sim = config_sim,
+            config_sim=config_sim,
             device=device,
             save_dir=save_dir,
         ).to_client()
@@ -34,9 +39,9 @@ def get_client_fn(
 def get_client_class(strategy: str):
     if strategy == "fedprox":
         return FedProxClient
-    elif strategy == 'scaffold':
+    elif strategy == "scaffold":
         return ScaffoldClient
-    elif strategy == 'fednova':
+    elif strategy == "fednova":
         return FedNovaClient
     else:
         return FedAvgClient

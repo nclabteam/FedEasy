@@ -17,12 +17,11 @@
 
 import concurrent.futures
 import csv
-import torch
 import timeit
 from logging import DEBUG, INFO
 from typing import Dict, List, Optional, Tuple, Union
-from torch.optim import SGD
 
+import torch
 from flwr.common import (
     Code,
     DisconnectRes,
@@ -33,8 +32,8 @@ from flwr.common import (
     Parameters,
     ReconnectIns,
     Scalar,
-    parameters_to_ndarrays,
     ndarrays_to_parameters,
+    parameters_to_ndarrays,
 )
 from flwr.common.logger import log
 from flwr.common.typing import GetParametersIns
@@ -42,6 +41,7 @@ from flwr.server.client_manager import ClientManager
 from flwr.server.client_proxy import ClientProxy
 from flwr.server.history import History
 from flwr.server.strategy import FedAvg, Strategy
+from torch.optim import SGD
 
 from mak.servers.custom_server import ServerSaveData
 
@@ -61,16 +61,22 @@ ReconnectResultsAndFailures = Tuple[
 
 class ScaffoldServer(ServerSaveData):
     """Scaffold server customised to save data of rounds in csv files.
-   from https://github.com/adap/flower/blob/main/baselines/niid_bench/niid_bench/server_scaffold.py
+    from https://github.com/adap/flower/blob/main/baselines/niid_bench/niid_bench/server_scaffold.py
     """
 
-    def __init__(self, *, client_manager, strategy = None, out_file_path=None, target_acc=0.85):
-        super().__init__(client_manager=client_manager, strategy=strategy, out_file_path=out_file_path, target_acc=target_acc)
+    def __init__(
+        self, *, client_manager, strategy=None, out_file_path=None, target_acc=0.85
+    ):
+        super().__init__(
+            client_manager=client_manager,
+            strategy=strategy,
+            out_file_path=out_file_path,
+            target_acc=target_acc,
+        )
         self.server_cv: List[torch.Tensor] = []
 
         st = f"Using Custom Save Data Server (Scaffold) with strategy : {self.strategy.__class__}"
         log(INFO, st)
-
 
     def _get_initial_parameters(self, timeout: Optional[float]) -> Parameters:
         """Get initial parameters from one of the available clients."""
@@ -93,7 +99,7 @@ class ScaffoldServer(ServerSaveData):
             for t in parameters_to_ndarrays(get_parameters_res.parameters)
         ]
         return get_parameters_res.parameters
-    
+
     # pylint: disable=too-many-locals
     def fit(self, num_rounds: int, timeout: Optional[float]) -> History:
         """Run federated averaging for a number of rounds."""
@@ -190,7 +196,6 @@ class ScaffoldServer(ServerSaveData):
         log(INFO, "FL finished in %s", elapsed)
         return history
 
-
     # pylint: disable=too-many-locals
     def fit_round(
         self,
@@ -233,7 +238,9 @@ class ScaffoldServer(ServerSaveData):
         )
 
         # Aggregate training results
-        aggregated_result: Tuple[Optional[Parameters], Dict[str, Scalar]] = self.strategy.aggregate_fit(server_round, results, failures)
+        aggregated_result: Tuple[Optional[Parameters], Dict[str, Scalar]] = (
+            self.strategy.aggregate_fit(server_round, results, failures)
+        )
 
         aggregated_result_arrays_combined = []
         if aggregated_result[0] is not None:
@@ -268,6 +275,7 @@ class ScaffoldServer(ServerSaveData):
         metrics_aggregated = aggregated_result[1]
         return parameters_updated, metrics_aggregated, (results, failures)
 
+
 def update_parameters_with_cv(
     parameters: Parameters, s_cv: List[torch.Tensor]
 ) -> Parameters:
@@ -277,6 +285,7 @@ def update_parameters_with_cv(
     parameters_np = parameters_to_ndarrays(parameters)
     parameters_np.extend(cv_np)
     return ndarrays_to_parameters(parameters_np)
+
 
 def fit_clients(
     client_instructions: List[Tuple[ClientProxy, FitIns]],
@@ -335,8 +344,6 @@ def _handle_finished_future_after_fit(
 
     # Not successful, client returned a result where the status code is not OK
     failures.append(result)
-
-
 
 
 class ScaffoldOptimizer(SGD):

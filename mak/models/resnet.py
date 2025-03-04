@@ -1,4 +1,5 @@
 """Implements the Base Resnet model."""
+
 from typing import Tuple
 
 import torch.nn.functional as F

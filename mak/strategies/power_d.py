@@ -1,16 +1,16 @@
 from typing import Any, Callable, Dict, List, Tuple
-from numpy import dtype, ndarray
 
 import flwr as fl
-from flwr.server.client_proxy import ClientProxy
-from flwr.server.client_manager import ClientManager
-
 from flwr.common import (
     EvaluateIns,
     EvaluateRes,
     FitIns,
     Parameters,
 )
+from flwr.server.client_manager import ClientManager
+from flwr.server.client_proxy import ClientProxy
+from numpy import dtype, ndarray
+
 
 class PowD(fl.server.strategy.FedAvg):
     """Power Of Choice Client Selection Algorithm.
@@ -18,19 +18,20 @@ class PowD(fl.server.strategy.FedAvg):
     https://proceedings.mlr.press/v151/jee-cho22a.html.
 
     """
+
     def __init__(
         self,
-        fraction_fit: float, 
-        fraction_evaluate: float, 
-        min_fit_clients: int, 
-        min_evaluate_clients: int, 
-        min_available_clients: int, 
-        evaluate_fn, 
+        fraction_fit: float,
+        fraction_evaluate: float,
+        min_fit_clients: int,
+        min_evaluate_clients: int,
+        min_available_clients: int,
+        evaluate_fn,
         on_fit_config_fn,
-        candidate_client_set, # d parameter for power of selection
+        candidate_client_set,  # d parameter for power of selection
         **kwargs,
-        ) -> None:
-        
+    ) -> None:
+
         super().__init__(
             fraction_fit=fraction_fit,
             fraction_evaluate=fraction_evaluate,
@@ -40,18 +41,18 @@ class PowD(fl.server.strategy.FedAvg):
             evaluate_fn=evaluate_fn,
             on_fit_config_fn=on_fit_config_fn,
         )
-        
+
         # sample size for random selection
         self.d_choice = candidate_client_set
 
     def __repr__(self) -> str:
         return "Pow-D"
-    
+
     def configure_fit(
         self, server_round: int, parameters: Parameters, client_manager: ClientManager
     ) -> List[Tuple[ClientProxy, FitIns]]:
         """Configure the next round of training.
-        
+
         Apply Power-Of-Selection strategy for client selection.
         """
         config = {}

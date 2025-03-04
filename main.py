@@ -17,8 +17,10 @@ def main():
     config_sim = get_config(args.config)
     seed = args.seed if args.seed else config_sim.get('common', {}).get('seed', 42)
     strategy = args.strategy if args.strategy else config_sim.get('server', {}).get('strategy', '')
+    dirichlet_alpha = args.dirichlet_alpha if args.dirichlet_alpha else config_sim.get('common', {}).get('dirichlet_alpha', '')
     config_sim['common']['seed'] = seed
     config_sim['server']['strategy'] = strategy
+    config_sim['common']['dirichlet_alpha'] = dirichlet_alpha
     set_seed(seed=config_sim['common']['seed'])
 
     fds, centralized_testset = get_dataset(config_sim=config_sim)

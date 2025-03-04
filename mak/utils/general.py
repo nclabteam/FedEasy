@@ -1,9 +1,9 @@
+import copy
 from collections import OrderedDict
 from typing import List, Tuple
 
 import flwr as fl
 import torch
-import copy
 from flwr.common import Metrics
 
 
@@ -43,6 +43,7 @@ def weighted_average(metrics: List[Tuple[int, Metrics]]) -> Metrics:
     # Aggregate and return custom metric (weighted average)
     return {"accuracy": sum(accuracies) / sum(examples)}
 
+
 def get_unique_classes(dataloader):
     all_labels = []
     for batch in dataloader:
@@ -54,6 +55,7 @@ def get_unique_classes(dataloader):
     unique_classes = list(set(all_labels))
     return unique_classes
 
+
 def random_pertube(model, gamma):
     new_model = copy.deepcopy(model)
     for p in new_model.parameters():
@@ -63,7 +65,12 @@ def random_pertube(model, gamma):
         else:
             p.grad.data.copy_(gauss.data)
 
-    norm = torch.norm(torch.stack([p.grad.norm(p=2) for p in new_model.parameters() if p.grad is not None]), p=2)
+    norm = torch.norm(
+        torch.stack(
+            [p.grad.norm(p=2) for p in new_model.parameters() if p.grad is not None]
+        ),
+        p=2,
+    )
 
     with torch.no_grad():
         scale = gamma / (norm + 1e-12)
