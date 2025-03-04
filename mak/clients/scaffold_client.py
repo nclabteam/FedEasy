@@ -78,7 +78,6 @@ class ScaffoldClient(BaseClient):
         server_update_c = []
         # update client control variate c_i_1 = c_i - c + 1/eta*K (x - y_i)
         for c_i_j, c_j, x_j, y_i_j in zip(self.client_cv, server_cv, x, y_i):
-
             c_i_n.append(
                 c_i_j
                 - c_j

@@ -31,7 +31,6 @@ class PowD(fl.server.strategy.FedAvg):
         candidate_client_set,  # d parameter for power of selection
         **kwargs,
     ) -> None:
-
         super().__init__(
             fraction_fit=fraction_fit,
             fraction_evaluate=fraction_evaluate,

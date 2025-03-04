@@ -72,12 +72,8 @@ if __name__ == "__main__":
 
         # Extract values and standard deviations
         max_acc_idx = dfs["accuracy"]["mean"].idxmax()
-        # if name[0] == "FedAvgM":
-        #     print(max_acc_idx)
-        #     print(dfs["accuracy"]["std"])
-        #     break
-        max_acc_mean = dfs["accuracy"]["mean"].iloc[max_acc_idx - 1]
-        max_acc_std = dfs["accuracy"]["std"].iloc[max_acc_idx - 1]
+        max_acc_mean = dfs["accuracy"]["mean"].iloc[max_acc_idx]
+        max_acc_std = dfs["accuracy"]["std"].iloc[max_acc_idx]
 
         data["strategy"].append(name[0])
         data["dataset"].append(name[1])
