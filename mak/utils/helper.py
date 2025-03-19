@@ -30,7 +30,6 @@ from mak.strategies.fednova_strategy import FedNovaStrategy
 from mak.strategies.scaffold_strategy import ScaffoldStrategy
 from mak.utils.dataset_info import dataset_info
 from mak.utils.general import set_params, test, weighted_average
-from mak.utils.pytorch_transformations import apply_transforms_test
 
 
 def get_device_and_resources(config_sim):
@@ -201,7 +200,7 @@ def get_evaluate_fn(
     device,
     save_model_dir,
     metrics_file,
-    apply_transforms,
+    apply_transforms_test,
 ):
     """Return an evaluation function for centralized evaluation."""
     dataset_name = config_sim["common"]["dataset"]
@@ -335,7 +334,7 @@ def get_strategy(
     save_model_dir,
     out_file_path,
     device,
-    apply_transforms,
+    apply_transforms_test,
     size_weights,
 ):
     STRATEGY = config["server"]["strategy"]
@@ -375,7 +374,7 @@ def get_strategy(
             "model": model,
             "test_data": test_data,
             "size_weights": size_weights,
-            "apply_transforms": apply_transforms,
+            "apply_transforms": apply_transforms_test,
         },
         "PowD": {
             "candidate_client_set": config["powd_config"]["candidate_client_set"],
@@ -394,7 +393,7 @@ def get_strategy(
             save_model_dir=save_model_dir,
             metrics_file=out_file_path,
             device=device,
-            apply_transforms=apply_transforms,
+            apply_transforms_test=apply_transforms_test,
         ),
         evaluate_metrics_aggregation_fn=weighted_average,
         on_fit_config_fn=get_fit_config_fn(config_sim=config),

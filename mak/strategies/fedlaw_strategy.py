@@ -40,7 +40,7 @@ class FedLaw(fl.server.strategy.FedAvg):
         min_available_clients: int,
         evaluate_fn,
         evaluate_metrics_aggregation_fn,
-        apply_transforms,
+        apply_transforms_test,
         size_weights,
         config,
         device="cpu",
@@ -63,7 +63,7 @@ class FedLaw(fl.server.strategy.FedAvg):
         self.evaluate_fn = evaluate_fn
         self.on_fit_config_fn = on_fit_config_fn
         self.evaluate_metrics_aggregation_fn = evaluate_metrics_aggregation_fn
-        self.apply_transforms = apply_transforms
+        self.apply_transforms = apply_transforms_test
         self.device = device
         self.size_weights = size_weights
         self.config = config["fedlaw_config"]
