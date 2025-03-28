@@ -55,6 +55,6 @@ dataset_info = {  # Image datasets
         "feature_key" : "image",
         "output_column": "label",
         "test_set": "test",
-        "input_shape": (1, 16, 16),
+        "input_shape": (1, 32, 32), #resize this from 16 to 32
     },
 }

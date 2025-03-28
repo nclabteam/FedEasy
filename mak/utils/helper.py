@@ -375,6 +375,7 @@ def get_strategy(
             "test_data": test_data,
             "size_weights": size_weights,
             "apply_transforms": apply_transforms_test,
+            "apply_transforms_test": apply_transforms_test,
         },
         "PowD": {
             "candidate_client_set": config["powd_config"]["candidate_client_set"],
