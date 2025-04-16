@@ -3,13 +3,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-def focal_loss(input_values, gamma):
-    """Computes the focal loss"""
-    p = torch.exp(-input_values)
-    loss = (1 - p) ** gamma * input_values
-    return loss.mean()
-
-
 class FocalLoss(nn.Module):
     def __init__(self, weight=None, gamma=0.0):
         super(FocalLoss, self).__init__()
@@ -22,3 +15,10 @@ class FocalLoss(nn.Module):
             F.cross_entropy(input, target, reduction="none", weight=self.weight),
             self.gamma,
         )
+
+
+def focal_loss(input_values, gamma):
+    """Computes the focal loss"""
+    p = torch.exp(-input_values)
+    loss = (1 - p) ** gamma * input_values
+    return loss.mean()

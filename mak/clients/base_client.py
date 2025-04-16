@@ -1,7 +1,6 @@
 import os
 
 import flwr as fl
-import torch
 from torch.utils.data import DataLoader
 
 from mak.utils.general import set_params, test

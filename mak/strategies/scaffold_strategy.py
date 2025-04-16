@@ -1,10 +1,8 @@
 from functools import reduce
 from logging import WARNING
 
-import numpy as np
 from flwr.common import (
     FitRes,
-    NDArrays,
     Parameters,
     Scalar,
     ndarrays_to_parameters,
