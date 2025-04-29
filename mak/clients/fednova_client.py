@@ -1,8 +1,4 @@
-import os
-from typing import Dict, OrderedDict
-
 import torch
-from flwr.common import Scalar
 from torch.utils.data import DataLoader
 
 from mak.clients.base_client import BaseClient
