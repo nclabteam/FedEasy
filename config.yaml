@@ -1,0 +1,48 @@
+---
+# config
+
+common:
+  data_type : dirichlet_niid # data_type = data distribution one among ['iid','dirichlet_niid']
+  dataset : cifar100 # data_set = data set used  one among ['cifar10', 'cifar100', 'mnist', 'fashion_mnist', 'sasha/dog-food', 'zh-plus/tiny-imagenet', 'Mike0307/MNIST-M', 'flwrlabs/usps']
+  dirichlet_alpha : 10 #dirichlet concentration parameter (only used if data_type is dirchlet-niid)
+  target_acc : 0.95
+  model : Resnet18 # one among [ Net, CifarNet, SimpleCNN, KerasExpCNN, MNISTCNN, SimpleDNN, FMCNNModel,FedAVGCNN,Resnet18, Resnet34,ResNet18Pretrained, ResNet34Pretrained,ResNet18Small, ResNet20Small,MobileNetV2,EfficientNetB0,LSTMModel]
+  optimizer : sgd # one among [sgd,adam]
+  sgd_momentum : 0.9
+  seed : 123  #123 456 8911
+  multi_node : False
+  save_log : True
+
+server:
+  num_rounds : 3
+  address : 127.0.0.1
+  fraction_fit : 0.02
+  min_fit_clients: 2
+  num_clients : 100  # total number of clients participating in training
+  fraction_evaluate : 0
+  strategy : Scaffold  #[FedLaw, FedProx, FedAvgM, FedOpt, FedAdam, FedMedian, FedAvg, PowD, Scaffold, FedNova]
+
+client:
+  loss: CrossEntropyLoss # [CrossEntropyLoss, FocalLoss]
+  epochs : 1
+  batch_size : 32
+  test_batch_size : 32
+  lr: 0.01 #  [0.0001,0.001,0.005,0.01,0.1,0.2]
+  save_train_res : True
+  total_cpus : 20 # no. of CPU cores that are assigned for all simulation
+  total_gpus : 1 # no. of GPU's assigned for whole simulation
+  gpu : True  # True or False, Use GPU for training or not.
+  num_cpus : 2  # no. of CPU cores that are assigned for each actor
+  num_gpus : 0.1 #  no. of GPU that are assigned for each actor (it can be fraction value as well)
+
+fedlaw_config:
+  server_funct : 'exp' #['exp' or 'quad'] #currently exp only is implemented
+  server_optimizer : 'adam'
+  server_valid_ratio : 0.02 #percentage of data used for server side retraining
+  server_epochs : 10
+
+fedprox:
+  proximal_mu : 0.01
+
+powd_config:
+  candidate_client_set: 20 # the d parameter (client fraction ≤ d ≤ total clients)
