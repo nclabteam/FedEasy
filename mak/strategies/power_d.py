@@ -1,15 +1,9 @@
-from typing import Any, Callable, Dict, List, Tuple
+from typing import List, Tuple
 
 import flwr as fl
-from flwr.common import (
-    EvaluateIns,
-    EvaluateRes,
-    FitIns,
-    Parameters,
-)
+from flwr.common import EvaluateIns, EvaluateRes, FitIns, Parameters
 from flwr.server.client_manager import ClientManager
 from flwr.server.client_proxy import ClientProxy
-from numpy import dtype, ndarray
 
 
 class PowD(fl.server.strategy.FedAvg):

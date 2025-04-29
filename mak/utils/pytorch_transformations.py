@@ -1,13 +1,23 @@
-from torchvision.transforms import Compose, ToTensor, Normalize, Lambda, ToPILImage, CenterCrop, Resize
 import torch.nn.functional as F
 from torch.autograd import Variable
+from torchvision.transforms import (
+    CenterCrop,
+    Compose,
+    Lambda,
+    Normalize,
+    Resize,
+    ToPILImage,
+    ToTensor,
+)
+
 from mak.utils.dataset_info import dataset_info
+
 
 class TransformationPipeline:
     def __init__(self, dataset_name):
         self.dataset_name = dataset_name
-        self.feature_key = dataset_info[self.dataset_name]['feature_key']
-        self.img_shape = dataset_info[self.dataset_name]['input_shape']
+        self.feature_key = dataset_info[self.dataset_name]["feature_key"]
+        self.img_shape = dataset_info[self.dataset_name]["input_shape"]
 
     def apply_transforms_scaffold(self, batch):
         """Apply transforms to the partition from FederatedDataset.
@@ -29,7 +39,9 @@ class TransformationPipeline:
                 ToTensor(),
             ]
         )
-        batch[self.feature_key] = [pytorch_transforms(img) for img in batch[self.feature_key]]
+        batch[self.feature_key] = [
+            pytorch_transforms(img) for img in batch[self.feature_key]
+        ]
         return batch
 
     def apply_transforms_cifar10(self, batch):
@@ -43,9 +55,11 @@ class TransformationPipeline:
                 ),
             ]
         )
-        batch[self.feature_key] = [pytorch_transforms(img) for img in batch[self.feature_key]]
+        batch[self.feature_key] = [
+            pytorch_transforms(img) for img in batch[self.feature_key]
+        ]
         return batch
-    
+
     def apply_transforms_dogfood(self, batch):
         """Apply transforms to the partition from FederatedDataset sasha/dogfood."""
         pytorch_transforms = Compose(
@@ -55,9 +69,11 @@ class TransformationPipeline:
                 ToTensor(),
             ]
         )
-        batch[self.feature_key] = [pytorch_transforms(img) for img in batch[self.feature_key]]
+        batch[self.feature_key] = [
+            pytorch_transforms(img) for img in batch[self.feature_key]
+        ]
         return batch
-    
+
     def apply_transforms_usps(self, batch):
         """Apply transforms to the partition from FederatedDataset flwrlabs/usps."""
         pytorch_transforms = Compose(
@@ -66,30 +82,40 @@ class TransformationPipeline:
                 ToTensor(),
             ]
         )
-        batch[self.feature_key] = [pytorch_transforms(img) for img in batch[self.feature_key]]
+        batch[self.feature_key] = [
+            pytorch_transforms(img) for img in batch[self.feature_key]
+        ]
         return batch
-    
+
     def apply_transforms_tiny_imagenet(self, batch):
         """Apply transforms to the partition from FederatedDataset zh-plus/tiny-imagenet."""
         pytorch_transforms = Compose(
             [
-                Lambda(lambda img: img.convert("RGB") if img.mode != "RGB" else img),  # Convert grayscale to RGB
+                Lambda(
+                    lambda img: img.convert("RGB") if img.mode != "RGB" else img
+                ),  # Convert grayscale to RGB
                 ToTensor(),
-                Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+                Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
             ]
         )
-        batch[self.feature_key] = [pytorch_transforms(img) for img in batch[self.feature_key]]
+        batch[self.feature_key] = [
+            pytorch_transforms(img) for img in batch[self.feature_key]
+        ]
         return batch
-    
+
     def apply_transforms_tiny_imagenet_test(self, batch):
         """Apply transforms to the partition from FederatedDataset zh-plus/tiny-imagenet."""
         pytorch_transforms = Compose(
             [
-                Lambda(lambda img: img.convert("RGB") if img.mode != "RGB" else img),  # Convert grayscale to RGB
+                Lambda(
+                    lambda img: img.convert("RGB") if img.mode != "RGB" else img
+                ),  # Convert grayscale to RGB
                 ToTensor(),
             ]
         )
-        batch[self.feature_key] = [pytorch_transforms(img) for img in batch[self.feature_key]]
+        batch[self.feature_key] = [
+            pytorch_transforms(img) for img in batch[self.feature_key]
+        ]
         return batch
 
     def apply_transforms_default(self, batch):
@@ -99,7 +125,9 @@ class TransformationPipeline:
                 ToTensor(),
             ]
         )
-        batch[self.feature_key] = [pytorch_transforms(img) for img in batch[self.feature_key]]
+        batch[self.feature_key] = [
+            pytorch_transforms(img) for img in batch[self.feature_key]
+        ]
         return batch
 
     def apply_transforms_test(self, batch):
@@ -109,7 +137,9 @@ class TransformationPipeline:
                 ToTensor(),
             ]
         )
-        batch[self.feature_key] = [pytorch_transforms(img) for img in batch[self.feature_key]]
+        batch[self.feature_key] = [
+            pytorch_transforms(img) for img in batch[self.feature_key]
+        ]
         return batch
 
     def get_transformations(self):
@@ -120,6 +150,9 @@ class TransformationPipeline:
         elif self.dataset_name == "flwrlabs/usps":
             return self.apply_transforms_usps, self.apply_transforms_usps
         elif self.dataset_name == "zh-plus/tiny-imagenet":
-            return self.apply_transforms_tiny_imagenet, self.apply_transforms_tiny_imagenet_test
+            return (
+                self.apply_transforms_tiny_imagenet,
+                self.apply_transforms_tiny_imagenet_test,
+            )
         else:
             return self.apply_transforms_default, self.apply_transforms_test

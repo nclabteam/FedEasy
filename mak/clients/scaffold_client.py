@@ -1,5 +1,5 @@
 import os
-from typing import Dict, OrderedDict
+from typing import Dict
 
 import torch
 from flwr.common import Scalar

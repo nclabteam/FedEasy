@@ -15,33 +15,19 @@
 """FedNova server ."""
 
 
-import concurrent.futures
-import csv
-import timeit
 from logging import DEBUG, INFO
 from typing import Dict, List, Optional, Tuple, Union
 
-import torch
 from flwr.common import (
-    Code,
     DisconnectRes,
-    EvaluateIns,
     EvaluateRes,
-    FitIns,
     FitRes,
     Parameters,
-    ReconnectIns,
     Scalar,
-    ndarrays_to_parameters,
     parameters_to_ndarrays,
 )
 from flwr.common.logger import log
-from flwr.common.typing import GetParametersIns
-from flwr.server.client_manager import ClientManager
 from flwr.server.client_proxy import ClientProxy
-from flwr.server.history import History
-from flwr.server.strategy import FedAvg, Strategy
-from torch.optim import SGD
 
 from mak.servers.custom_server import ServerSaveData, fit_clients
 

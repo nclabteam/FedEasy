@@ -25,12 +25,10 @@ import torch
 from flwr.common import (
     Code,
     DisconnectRes,
-    EvaluateIns,
     EvaluateRes,
     FitIns,
     FitRes,
     Parameters,
-    ReconnectIns,
     Scalar,
     ndarrays_to_parameters,
     parameters_to_ndarrays,
@@ -238,9 +236,9 @@ class ScaffoldServer(ServerSaveData):
         )
 
         # Aggregate training results
-        aggregated_result: Tuple[Optional[Parameters], Dict[str, Scalar]] = (
-            self.strategy.aggregate_fit(server_round, results, failures)
-        )
+        aggregated_result: Tuple[
+            Optional[Parameters], Dict[str, Scalar]
+        ] = self.strategy.aggregate_fit(server_round, results, failures)
 
         aggregated_result_arrays_combined = []
         if aggregated_result[0] is not None:
