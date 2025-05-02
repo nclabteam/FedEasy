@@ -35,6 +35,7 @@ class FedAvgClient(BaseClient):
             trainloader=trainloader,
             optim=optimizer,
             epochs=epochs,
+            training_mode=self.training_mode,
             device=self.device,
             config=config,
         )

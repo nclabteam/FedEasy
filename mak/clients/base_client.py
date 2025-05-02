@@ -28,6 +28,9 @@ class BaseClient(fl.client.NumPyClient):
         self.device = device
         self.train_batch_size = self.config_sim["client"]["batch_size"]
         self.test_batch_size = config_sim["client"]["test_batch_size"]
+        self.training_mode = config_sim["client"]["training_mode"]
+        self.finetune_mode = config_sim["client"]["finetune_mode"]
+        self.finetune_epochs = config_sim["client"]["finetune_epochs"]
         self.model.to(self.device)
         self.save_dir = os.path.join(save_dir, "clients")
 
@@ -56,6 +59,7 @@ class BaseClient(fl.client.NumPyClient):
             trainloader=trainloader,
             optim=optimizer,
             epochs=epochs,
+            training_mode=self.training_mode,
             device=self.device,
             config=config,
         )
@@ -64,6 +68,23 @@ class BaseClient(fl.client.NumPyClient):
 
     def evaluate(self, parameters, config):
         self.set_parameters(parameters)
+        if self.finetune_epochs >= 1:
+            trainloader = DataLoader(
+                self.trainset,
+                batch_size=self.train_batch_size,
+                shuffle=False,
+                drop_last=True,
+            )
+            optimizer = get_optimizer(self.model, config)
+            self.train(
+                net=self.model,
+                trainloader=trainloader,
+                optim=optimizer,
+                epochs=self.finetune_epochs,
+                training_mode=self.finetune_mode,
+                device=self.device,
+                config=config,
+            )
         valloader = DataLoader(self.valset, batch_size=self.test_batch_size)
         loss, accuracy = self.test(self.model, valloader, device=self.device)
         return float(loss), len(valloader.dataset), {"accuracy": float(accuracy)}
@@ -71,9 +92,12 @@ class BaseClient(fl.client.NumPyClient):
     def get_loss(self, loss):
         return getattr(__import__("mak.losses", fromlist=[loss]), loss)()
 
-    def train(self, net, trainloader, optim, epochs, device: str, config: dict):
+    def train(
+        self, net, trainloader, optim, epochs, training_mode, device: str, config: dict
+    ):
         """Train the network on the training set."""
         criterion = self.get_loss(loss=config["loss"])
+        self._freeze_model_if_needed(net, training_mode)
         net.train()
 
         for _ in range(epochs):
@@ -88,3 +112,19 @@ class BaseClient(fl.client.NumPyClient):
 
     def test(self, net, testloader, device: str):
         return test(net=net, testloader=testloader, device=device)
+
+    def _freeze_layers(self, net, layers_to_freeze):
+        for name, param in net.named_parameters():
+            if name in layers_to_freeze:
+                param.requires_grad = False
+            else:
+                param.requires_grad = True
+
+    def _freeze_model_if_needed(self, net, mode):
+        if mode == "head":
+            layers_to_freeze = list(net._modules.keys())[:-1]  # freeze body layers
+        elif mode == "body":
+            layers_to_freeze = [list(net._modules.keys())[-1]]  # freeze head layer
+        else:
+            layers_to_freeze = []  # keep full model
+        self._freeze_layers(net, layers_to_freeze)

@@ -18,11 +18,11 @@ from flwr.common import Scalar
 from flwr.common.logger import log
 from flwr.common.typing import Scalar
 from flwr_datasets import FederatedDataset
-from flwr_datasets.partitioner import DirichletPartitioner, IidPartitioner
 from torch.utils.data import DataLoader
 
 import mak
 import mak.strategies
+from mak.paritioner import *
 from mak.servers.custom_server import ServerSaveData
 from mak.servers.fednova_server import FedNovaServer
 from mak.servers.scaffold_server import ScaffoldServer
@@ -160,6 +160,39 @@ def get_partitioner(config_sim):
             alpha=dirchlet_alpha,
             min_partition_size=2,
             self_balancing=True,
+        )
+    elif config_sim["common"]["data_type"] == "pathological":
+        dataset_name = config_sim["common"]["dataset"]
+        # dataset's label column
+        label = dataset_info[dataset_name]["output_column"]
+        # number of class per client
+        num_class_per_client = config_sim["common"]["num_class_per_client"]
+        # class assignment mode for extended dirichlet partitioner
+        class_assignment_mode = config_sim["common"]["class_assignment_mode"]
+        partitioner = PathologicalPartitioner(
+            num_partitions=num_clients,
+            partition_by=label,
+            num_classes_per_partition=num_class_per_client,
+            class_assignment_mode=class_assignment_mode,
+        )
+    elif config_sim["common"]["data_type"] == "extended_dirichlet_niid":
+        # alpha value
+        dirchlet_alpha = config_sim["common"]["dirichlet_alpha"]
+        # dataset
+        dataset_name = config_sim["common"]["dataset"]
+        # dataset's label column
+        label = dataset_info[dataset_name]["output_column"]
+        # number of class per client
+        num_class_per_client = config_sim["common"]["num_class_per_client"]
+        # class assignment mode for extended dirichlet partitioner
+        class_assignment_mode = config_sim["common"]["class_assignment_mode"]
+        partitioner = ExtendedDirichletPartitioner(
+            num_partitions=num_clients,
+            partition_by=label,
+            alpha=dirchlet_alpha,
+            min_partition_size=2,
+            num_classes_per_partition=num_class_per_client,
+            class_assignment_mode=class_assignment_mode,
         )
     else:
         partitioner = IidPartitioner(num_partitions=num_clients)
@@ -398,6 +431,7 @@ def get_strategy(
         ),
         evaluate_metrics_aggregation_fn=weighted_average,
         on_fit_config_fn=get_fit_config_fn(config_sim=config),
+        on_evaluate_config_fn=get_fit_config_fn(config_sim=config),
         initial_parameters=fl.common.ndarrays_to_parameters(
             [val.cpu().numpy() for _, val in model.state_dict().items()]
         ),

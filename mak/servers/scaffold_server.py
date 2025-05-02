@@ -236,9 +236,9 @@ class ScaffoldServer(ServerSaveData):
         )
 
         # Aggregate training results
-        aggregated_result: Tuple[
-            Optional[Parameters], Dict[str, Scalar]
-        ] = self.strategy.aggregate_fit(server_round, results, failures)
+        aggregated_result: Tuple[Optional[Parameters], Dict[str, Scalar]] = (
+            self.strategy.aggregate_fit(server_round, results, failures)
+        )
 
         aggregated_result_arrays_combined = []
         if aggregated_result[0] is not None:

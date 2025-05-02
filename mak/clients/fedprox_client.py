@@ -19,11 +19,14 @@ class FedProxClient(BaseClient):
     def __repr__(self) -> str:
         return " FedProx client"
 
-    def train(self, net, trainloader, optim, epochs, device: str, config: dict):
+    def train(
+        self, net, trainloader, optim, epochs, training_mode, device: str, config: dict
+    ):
         """Train the network on the training set for fedprox."""
         criterion = self.get_loss(loss=config["loss"])
 
         global_params = [val.detach().clone() for val in net.parameters()]
+        self._freeze_model_if_needed(net, training_mode)
         net.train()
 
         total_loss = 0
