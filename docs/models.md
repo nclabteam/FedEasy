@@ -1,14 +1,15 @@
 The code of all these model classes can be found inside [`mak/models`](https://github.com/nclabteam/FedEasy/tree/main/mak/models) file.
+
 ## Models
 ### 1. `Resnet18` 
-A simple standard resnet18 architecture
+A simple standard resnet18 architecture.
     
 ### 2. `ResNet18Pretrained` 
-A pretrained resnet18 architecture from torchvision
+A pretrained resnet18 architecture from torchvision.
 
 ### 3. `Net` 
 A simple CNN model implemented from scratch, the architecture is shown below:
-```
+```python
     def __init__(self, num_classes: int, weights = None, *args, **kwargs):
         """
         Initialize the Net model.
@@ -54,8 +55,8 @@ A simple CNN model implemented from scratch, the architecture is shown below:
 ```
 
 ### 4. `CifarNet` 
-A Simple CNN model adapted from 'PyTorch: A 60 Minute Blitz for three channel input' ( [Link](https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html) ) :
-```
+A Simple CNN model adapted from 'PyTorch: A 60 Minute Blitz for three channel input' ( [Link](https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html) ):
+```python
     def __init__(self, num_classes: int, weights = None, *args, **kwargs):
         """
         Initialize the CifarNet model.
@@ -102,7 +103,7 @@ A Simple CNN model adapted from 'PyTorch: A 60 Minute Blitz for three channel in
 ```
 ### 5. `FedAVGCNN` 
 Architecture of CNN model used in original FedAVG paper ([Paper]( https://doi.org/10.48550/arXiv.1602.05629))
-```
+```python
     def __init__(self, num_classes: int, weights = None, *args, **kwargs) -> None:
         """
         FedAVG CNN model with customizable classifier head.
@@ -143,6 +144,5 @@ Architecture of CNN model used in original FedAVG paper ([Paper]( https://doi.or
             Tensor: Output tensor.
         """
         return self._model(x)
-
 ```
 

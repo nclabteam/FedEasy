@@ -16,46 +16,43 @@ Follow these steps to set up and use this repository:
 1. Clone the Repository
 
 ```bash
-    git clone https://github.com/nclabteam/FedEasy.git
+git clone https://github.com/nclabteam/FedEasy.git
 ```
-2. After clone cd into cloned directory and open terminal.
+2. After cloning, navigate to the cloned directory and open the terminal.
 
-3. Ensure pip is installed if not install using
+3. Ensure `pip` is installed. If not, install it using:
 ```bash
-    sudo apt install python3-pip
+ sudo apt install python3-pip
 ```
 
-4. We will be using miniconda to create a virtual environment, download miniconda as
-If You already have conda installed skip step 4 and 5.
+4. We will use Miniconda to create a virtual environment. Download Miniconda with: (*If you already have Conda installed, skip steps 4 and 5.*)
 
 ```bash
-    curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o Miniconda3-latest-Linux-x86_64.sh
+ curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o Miniconda3-latest-Linux-x86_64.sh
 ```
-5. Then install miniconda using below command
+5. Then install Miniconda using the command below:
 ```bash
-    bash Miniconda3-latest-Linux-x86_64.sh
+  bash Miniconda3-latest-Linux-x86_64.sh
 ```
-6. Create a new virtual environment using conda
+6. Create a new virtual environment using Conda:
 ```bash
-    conda env create -f environment.yaml
+ conda env create -f environment.yaml
 ```
-It will create a virtual env named `venv-fedeasy` based on `environment.yaml` file
+This will create a virtual environment named `venv-fedeasy` based on the `environment.yaml` file.
 
-7. For using virtual environment we need to activate the environment first.
+7. Activate the virtual environment:
 ```bash
-    conda deactivate
-    conda activate venv-fedeasy
+ conda deactivate
+ conda activate venv-fedeasy
 ```
-8. We can change the confugration as per our need in config.yaml file
+8. You can change the configuration as per your needs in the `config.yaml` file.
 
-9. We can run scale clients to few hundred we can run flower in simulation mode on single machine like:
+9. To scale clients to a few hundred, we can run Flower in simulation mode on a single machine like this:
 ```bash
-    python main.py
-            or
-    python main.py --config /path/to/config.yaml
+python main.py
+    or
+python main.py --config /path/to/config.yaml
 ```
-This script will read the confugration from `config.yaml` file and starts the simulation.
+  This script reads the configuration from the `config.yaml` file and starts the simulation.
 
-The outputs will be saved in `out` directory.
-
-
+  The outputs will be saved in the `out` directory.

@@ -57,6 +57,8 @@ This will create a virtual environment named `venv-fedeasy` based on the `enviro
 9. To scale clients to a few hundred, we can run Flower in simulation mode on a single machine like this:
 ```bash
 python main.py
+    or
+python main.py --config /path/to/config.yaml
 ```
   This script reads the configuration from the `config.yaml` file and starts the simulation.
 

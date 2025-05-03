@@ -39,7 +39,7 @@ The `--head` flag designates this node as the cluster head.
 ```bash
    ray start --head --num_cpus 16 --num_gpus 1
 ```
-By default, Ray uses all available resources. Refer to the [Ray Documentation](https://docs.ray.io/en/latest/ray-core/configure.html) for more details.
+By default, Ray uses all the available resources. Refer to the [Ray Documentation](https://docs.ray.io/en/latest/ray-core/configure.html) for more details.
 
 5. Verify the Ray dashboard at [http://127.0.0.1:8265](http://127.0.0.1:8265).
 
@@ -70,7 +70,7 @@ Here, the worker node will use 16 CPUs and 1 GPU (if available).
 
 ![Dashboard Overview](./imgs/dashboard_overview.png "Overview of Dashboard")
 
-5. Click the cluster menu in the dashboard to see all connected nodes:
+5. Click the cluster menu in the dashboard to see all the connected nodes:
 
 ![View Nodes in Cluster](./imgs/dashboard_cluster.png "Cluster View")
 
