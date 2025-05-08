@@ -1,8 +1,6 @@
-from functools import reduce
+from flwr.server.strategy import FedAvg
 from logging import WARNING
 from typing import Callable, Dict, List, Optional, Tuple, Union
-
-import numpy as np
 from flwr.common import (
     EvaluateIns,
     EvaluateRes,
@@ -18,10 +16,13 @@ from flwr.common import (
 from flwr.common.logger import log
 from flwr.server.client_manager import ClientManager
 from flwr.server.client_proxy import ClientProxy
-from flwr.server.strategy import FedAvg
+import numpy as np
+from functools import reduce
 
-
-class LDAWA(FedAvg):
+class LDAWA(FedAvg): 
+    """
+    From: https://github.com/yasar-rehman/L-DAWA/blob/main/L-DAWA-Agg.py
+    """
     def __init__(
         self,
         *,
@@ -67,9 +68,7 @@ class LDAWA(FedAvg):
         failures: List[Union[Tuple[ClientProxy, FitRes], BaseException]],
     ) -> Tuple[Optional[Parameters], Dict[str, Scalar]]:
         if not self.prev_weight:
-            parameters_aggregated, metrics_aggregated = super().aggregate_fit(
-                server_round, results, failures
-            )
+            parameters_aggregated, metrics_aggregated = super().aggregate_fit(server_round, results, failures)
             self.prev_weight = parameters_aggregated
             return parameters_aggregated, metrics_aggregated
         else:
@@ -84,20 +83,18 @@ class LDAWA(FedAvg):
                     if len(x.shape) and len(y.shape) > 0:
                         if np.linalg.norm(x) > 0:
                             v = (x * y).sum() / (np.linalg.norm(x) * np.linalg.norm(y))
-                            delta_.append((str(idx), 1.0 * v))
-                            if v > 1:
+                            delta_.append((str(idx), 1.*v)) 
+                            if v > 1: 
                                 v = 1.0
-                            client_weights[i][idx] = x * v
+                            client_weights[i][idx] = x*v
                     else:
                         client_weights[i][idx] = client_weights[i][idx]
                 delta_c[str(i)] = delta_
 
-            parameters_aggregated: Parameters = ndarrays_to_parameters(
-                [
-                    reduce(np.add, layer_updates) / num_clients
-                    for layer_updates in zip(*client_weights)
-                ]
-            )
+            parameters_aggregated : Parameters = ndarrays_to_parameters([
+                reduce(np.add, layer_updates) / num_clients
+                for layer_updates in zip(*client_weights)
+            ])
             self.prev_weight = parameters_aggregated
             metrics_aggregated = {}
             if self.fit_metrics_aggregation_fn:
@@ -107,3 +104,4 @@ class LDAWA(FedAvg):
                 log(WARNING, "No fit_metrics_aggregation_fn provided")
 
             return parameters_aggregated, metrics_aggregated
+
