@@ -7,7 +7,7 @@ FedEasy is an open-source federated learning framework that aims to make advance
 ### Getting Started
 
 1. **Familiarize yourself with the codebase**: Before contributing, take some time to review the FedEasy codebase and understand the overall architecture and design.
-2. **Choose an issue to work on**: Browse the [issue tracker](https://github.com/nclabteam/FedEasy/issues) to find an issue that interests you and aligns with your skills or you can create a new issue and start working on that.
+2. **Choose an issue to work on**: Browse the [issue tracker](https://github.com/nclabteam/FedEasy/issues) to find an issue that interests you and aligns with your skills, or create a new issue to work on.
 3. **Fork the repository**: On the FedEasy GitHub page, click the "Fork" button at the top right corner to create your own copy of the repository.
 
 ### Cloning and Setting Up Your Local Environment
@@ -20,7 +20,6 @@ FedEasy is an open-source federated learning framework that aims to make advance
    ```bash
    cd FedEasy
    ```
-
 
 ### Creating a New Branch
 

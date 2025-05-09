@@ -1,8 +1,8 @@
 This file describes the datasets already implemented in this framework.
 
-> **Note**: We have used flwr-datasets for datasets and data partitioning schemes. More details can be found at : https://flower.ai/docs/datasets/tutorial-quickstart.html
+> **Note**: We use `flwr-datasets` for dataset loading and data partitioning schemes. More details can be found here: https://flower.ai/docs/datasets/tutorial-quickstart.html
 
-## The currently tested datasets are :
+## Currently Tested Datasets:
 1. `mnist`
 2. `cifar10`
 3. `cifar100`
