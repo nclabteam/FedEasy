@@ -72,8 +72,7 @@ class BaseClient(fl.client.NumPyClient):
             trainloader = DataLoader(
                 self.trainset,
                 batch_size=self.train_batch_size,
-                shuffle=False,
-                drop_last=True,
+                shuffle=True,
             )
             optimizer = get_optimizer(self.model, config)
             self.train(
