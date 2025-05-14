@@ -5,11 +5,16 @@ import pandas as pd
 
 
 def format_value(mean, std):
-    return f"{mean * 100:.3f}±{std * 100:.3f}"
+    return f"{mean * 100:.2f}±{std * 100:.2f}"
 
 
 if __name__ == "__main__":
-    paths = [os.path.join("out", "2025-02-27"), os.path.join("out", "2025-02-28")]
+    paths = [
+        os.path.join("out", "2025-02-27"),
+        os.path.join("out", "2025-02-28"), 
+        os.path.join("out", "2025-05-12"),
+        os.path.join("out", "2025-05-13"),
+    ]
 
     groups = {
         "strategy": [],
@@ -72,8 +77,8 @@ if __name__ == "__main__":
 
         # Extract values and standard deviations
         max_acc_idx = dfs["accuracy"]["mean"].idxmax()
-        max_acc_mean = dfs["accuracy"]["mean"].iloc[max_acc_idx]
-        max_acc_std = dfs["accuracy"]["std"].iloc[max_acc_idx]
+        max_acc_mean = dfs["accuracy"]["mean"].iloc[max_acc_idx - 1]
+        max_acc_std = dfs["accuracy"]["std"].iloc[max_acc_idx - 1]
 
         data["strategy"].append(name[0])
         data["dataset"].append(name[1])
@@ -104,6 +109,6 @@ if __name__ == "__main__":
 
     data = pd.DataFrame(data)
     data.to_csv("results.csv")
-    for name, gdf in data.groupby(["dirichlet_alpha"]):
+    for name, gdf in data.groupby(["dirichlet_alpha", "dataset"]):
         print(gdf.sort_values(by="mean-290_300", ascending=False))
-        print("=" * 100)
+        print("=" * 130)
