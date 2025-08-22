@@ -9,6 +9,11 @@ This repository provides an easy-to-use Federated Learning framework based on Fl
 
 > **Note**: This code has been written and tested on Ubuntu and should work seamlessly on any Linux-based distribution. Windows users may need to adjust some steps.
 
+## 📢 Publication
+
+FedEasy has been peer-reviewed and published in the [SoftwareX journal (Elsevier)](https://doi.org/10.1016/j.softx.2025.102276).  
+If you use FedEasy in your research or projects, please cite our article to acknowledge our work.
+
 ## 📋 Prerequisites
 
 - Git
@@ -126,14 +131,19 @@ bash code_formatting.sh
 
 ## 📖 Citation
 
-If you use FedEasy in your research, please cite our work:
+If you use FedEasy in your research, please cite our peer-reviewed publication in *SoftwareX*:
 
 ```bibtex
-@software{FedEasy2025,
-  author = {Kundroo, Majid and Haider, Ghani and Khoa, Nguyen and Mamond, Abdul Wahab and Kim, Taehong},
-  title = {FedEasy: Federated Learning With Ease},
-  year = {2025},
-  url = {https://github.com/nclabteam/FedEasy},
-  version = {1.0.0}
+@article{KUNDROO2025102276,
+title = {FedEasy : Federated learning with ease},
+journal = {SoftwareX},
+volume = {31},
+pages = {102276},
+year = {2025},
+issn = {2352-7110},
+doi = {https://doi.org/10.1016/j.softx.2025.102276},
+url = {https://www.sciencedirect.com/science/article/pii/S2352711025002432},
+author = {Majid Kundroo and Ghani Haider and Nguyen Khoa and Abdul Wahab Mamond and Taehong Kim},
+keywords = {Federated learning, Framework, Federated datasets}
 }
 ```
