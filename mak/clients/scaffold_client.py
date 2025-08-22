@@ -65,6 +65,7 @@ class ScaffoldClient(BaseClient):
             trainloader=trainloader,
             optim=optim,
             epochs=epochs,
+            training_mode=self.training_mode,
             device=self.device,
             config=config,
             server_cv=server_cv,
@@ -103,6 +104,7 @@ class ScaffoldClient(BaseClient):
         trainloader,
         optim,
         epochs,
+        training_mode,
         device: str,
         config: dict,
         server_cv,
@@ -111,6 +113,7 @@ class ScaffoldClient(BaseClient):
         """Train the network on the training set for fedprox."""
         criterion = self.get_loss(loss=config["loss"])
         global_params = [val.detach().clone() for val in net.parameters()]
+        self._freeze_model_if_needed(net, training_mode)
         net.train()
 
         total_loss = 0

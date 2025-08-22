@@ -41,6 +41,7 @@ class FedNovaClient(BaseClient):
             trainloader=trainloader,
             optim=optimizer,
             epochs=epochs,
+            training_mode=self.training_mode,
             device=self.device,
             config=config,
         )
@@ -48,11 +49,14 @@ class FedNovaClient(BaseClient):
         return g_i_np, len(trainloader.dataset), {"a_i": a_i}
         # return self.get_parameters({}), len(trainloader.dataset), {}
 
-    def train(self, net, trainloader, optim, epochs, device: str, config: dict):
+    def train(
+        self, net, trainloader, optim, epochs, training_mode, device: str, config: dict
+    ):
         """Train the network on the training set for fedprox."""
         criterion = self.get_loss(loss=config["loss"])
 
         global_params = [val.detach().clone() for val in net.parameters()]
+        self._freeze_model_if_needed(net, training_mode)
         net.train()
         local_steps = 0
 

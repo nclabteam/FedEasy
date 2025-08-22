@@ -2,32 +2,39 @@
 # config
 
 common:
-  data_type : dirichlet_niid # data_type = data distribution one among ['iid','dirichlet_niid']
+  data_type : shard # data_type = data distribution one among ['iid','dirichlet_niid', 'pathological', 'extended_dirichlet_niid', 'shard']
   dataset : cifar100 # data_set = data set used  one among ['cifar10', 'cifar100', 'mnist', 'fashion_mnist', 'sasha/dog-food', 'zh-plus/tiny-imagenet', 'Mike0307/MNIST-M', 'flwrlabs/usps']
-  dirichlet_alpha : 10 #dirichlet concentration parameter (only used if data_type is dirchlet-niid)
+  dirichlet_alpha : 0.1 # dirichlet concentration parameter (only used if data_type is dirichlet_niid or extended_dirichlet_niid) (should be >= 1 if using extended_dirichlet_niid)
+  num_class_per_client: 1 # for using 'pathological' or 'extended_dirichlet_niid'
+  class_assignment_mode: "first-deterministic" # for using 'pathological' or 'extended_dirichlet_niid', options: ["first-deterministic", "random", "deterministic"]
+  shard_per_client: 100 # for using 'shard' only
+  shard_size: 5 # for using 'shard' only (=total_train_data_samples/num_client*shard_size)
   target_acc : 0.95
-  model : Resnet18 # one among [ Net, CifarNet, SimpleCNN, KerasExpCNN, MNISTCNN, SimpleDNN, FMCNNModel,FedAVGCNN,Resnet18, Resnet34,ResNet18Pretrained, ResNet34Pretrained,ResNet18Small, ResNet20Small,MobileNetV2,EfficientNetB0,LSTMModel]
+  model : MobileNetV2 # one among [ Net, CifarNet, SimpleCNN, KerasExpCNN, MNISTCNN, SimpleDNN, FMCNNModel,FedAVGCNN, Resnet18, Resnet34, ResNet18Pretrained, ResNet34Pretrained, ResNet18Small, ResNet20Small,MobileNetV2,EfficientNetB0,LSTMModel]
   optimizer : sgd # one among [sgd,adam]
   sgd_momentum : 0.9
-  seed : 123  #123 456 8911
+  seed : 42  #123 456 8911
   multi_node : False
   save_log : True
 
 server:
-  num_rounds : 3
+  num_rounds : 320
   address : 127.0.0.1
-  fraction_fit : 0.02
+  fraction_fit : 0.1
   min_fit_clients: 2
   num_clients : 100  # total number of clients participating in training
-  fraction_evaluate : 0
-  strategy : Scaffold  #[FedLaw, FedProx, FedAvgM, FedOpt, FedAdam, FedMedian, FedAvg, PowD, Scaffold, FedNova]
+  fraction_evaluate : 1
+  strategy : FedBABU  #[FedLaw, FedProx, FedAvgM, FedOpt, FedAdam, FedMedian, FedAvg, PowD, Scaffold, FedNova, LDAWA, FedBABU]
 
 client:
   loss: CrossEntropyLoss # [CrossEntropyLoss, FocalLoss]
   epochs : 1
   batch_size : 32
   test_batch_size : 32
-  lr: 0.01 #  [0.0001,0.001,0.005,0.01,0.1,0.2]
+  lr: 0.1 #  [0.0001,0.001,0.005,0.01,0.1,0.2]
+  finetune_epochs: 5 # for personalized finetuning (fraction_evaluate must be > 0), set to 0 for turning off
+  training_mode: "body" # training option ["body", "head", "full"]
+  finetune_mode: "full" # finetuning option ["body", "head", "full"]
   save_train_res : True
   total_cpus : 20 # no. of CPU cores that are assigned for all simulation
   total_gpus : 1 # no. of GPU's assigned for whole simulation

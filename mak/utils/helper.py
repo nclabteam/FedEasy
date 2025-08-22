@@ -18,11 +18,11 @@ from flwr.common import Scalar
 from flwr.common.logger import log
 from flwr.common.typing import Scalar
 from flwr_datasets import FederatedDataset
-from flwr_datasets.partitioner import DirichletPartitioner, IidPartitioner
 from torch.utils.data import DataLoader
 
 import mak
 import mak.strategies
+from mak.paritioner import *
 from mak.servers.custom_server import ServerSaveData
 from mak.servers.fednova_server import FedNovaServer
 from mak.servers.scaffold_server import ScaffoldServer
@@ -147,19 +147,58 @@ def gen_dir_outfile_server(config):
 
 def get_partitioner(config_sim):
     num_clients = config_sim["server"]["num_clients"]
+    seed = config_sim["common"]["seed"]
+    # dataset
+    dataset_name = config_sim["common"]["dataset"]
+    # dataset's label column
+    label = dataset_info[dataset_name]["output_column"]
     if config_sim["common"]["data_type"] == "dirichlet_niid":
         # alpha value
         dirchlet_alpha = config_sim["common"]["dirichlet_alpha"]
-        # dataset
-        dataset_name = config_sim["common"]["dataset"]
-        # dataset's label column
-        label = dataset_info[dataset_name]["output_column"]
+
         partitioner = DirichletPartitioner(
             num_partitions=num_clients,
             partition_by=label,
             alpha=dirchlet_alpha,
             min_partition_size=2,
             self_balancing=True,
+            seed=seed,
+        )
+    elif config_sim["common"]["data_type"] == "pathological":
+        num_class_per_client = config_sim["common"]["num_class_per_client"]
+        # class assignment mode for extended dirichlet partitioner
+        class_assignment_mode = config_sim["common"]["class_assignment_mode"]
+        partitioner = PathologicalPartitioner(
+            num_partitions=num_clients,
+            partition_by=label,
+            num_classes_per_partition=num_class_per_client,
+            class_assignment_mode=class_assignment_mode,
+            seed=seed,
+        )
+    elif config_sim["common"]["data_type"] == "extended_dirichlet_niid":
+        # alpha value
+        dirchlet_alpha = config_sim["common"]["dirichlet_alpha"]
+        # number of class per client
+        num_class_per_client = config_sim["common"]["num_class_per_client"]
+        # class assignment mode for extended dirichlet partitioner
+        class_assignment_mode = config_sim["common"]["class_assignment_mode"]
+        partitioner = ExtendedDirichletPartitioner(
+            num_partitions=num_clients,
+            partition_by=label,
+            alpha=dirchlet_alpha,
+            min_partition_size=2,
+            num_classes_per_partition=num_class_per_client,
+            class_assignment_mode=class_assignment_mode,
+            seed=seed,
+        )
+    elif config_sim["common"]["data_type"] == "shard":
+        shards_per_partition = config_sim["common"]["shard_per_client"]
+        shard_size = config_sim["common"]["shard_size"]
+        partitioner = ShardPartitioner(
+            num_partitions=num_clients,
+            partition_by=label,
+            num_shards_per_partition=shards_per_partition,
+            shard_size=shard_size,
         )
     else:
         partitioner = IidPartitioner(num_partitions=num_clients)
@@ -338,6 +377,8 @@ def get_strategy(
     size_weights,
 ):
     STRATEGY = config["server"]["strategy"]
+    if STRATEGY == "FedBABU":
+        STRATEGY = "FedAvg"
     dataset_name = config["common"]["dataset"]
     shape = dataset_info[dataset_name]["input_shape"]
     model = get_model(config=config, shape=shape)
@@ -398,6 +439,7 @@ def get_strategy(
         ),
         evaluate_metrics_aggregation_fn=weighted_average,
         on_fit_config_fn=get_fit_config_fn(config_sim=config),
+        on_evaluate_config_fn=get_fit_config_fn(config_sim=config),
         initial_parameters=fl.common.ndarrays_to_parameters(
             [val.cpu().numpy() for _, val in model.state_dict().items()]
         ),
