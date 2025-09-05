@@ -16,15 +16,15 @@ common:
 server:
   num_rounds : 3
   address : 127.0.0.1
-  fraction_fit : 0.02
+  fraction_fit : 0.1
   min_fit_clients: 2
   num_clients : 100  # total number of clients participating in training
   fraction_evaluate : 0
-  strategy : Scaffold  #[FedLaw, FedProx, FedAvgM, FedOpt, FedAdam, FedMedian, FedAvg, PowD, Scaffold, FedNova]
+  strategy : FedAvg  #[FedLaw, FedProx, FedAvgM, FedOpt, FedAdam, FedMedian, FedAvg, PowD, Scaffold, FedNova]
 
 client:
   loss: CrossEntropyLoss # [CrossEntropyLoss, FocalLoss]
-  epochs : 1
+  epochs : 3
   batch_size : 32
   test_batch_size : 32
   lr: 0.01 #  [0.0001,0.001,0.005,0.01,0.1,0.2]
