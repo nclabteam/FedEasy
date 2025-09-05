@@ -35,7 +35,7 @@ def main():
 
     model = get_model(config_sim,shape = shape)
     transformation_pipeline = TransformationPipeline(dataset_name=dataset_name)
-    apply_transforms, apply_transforms_test = transformation_pipeline.get_transformations()
+    apply_transforms = transformation_pipeline.get_transformations()
     device, ray_init_args, client_res = get_device_and_resources(config_sim=config_sim)
     generated_info = {"shape" : shape, "device": str(device)}
     config_sim["generated_info"] = generated_info
@@ -54,7 +54,7 @@ def main():
     log(INFO,f" =>>>>> Dataset : {dataset_name} Partitoner : {str(fds._partitioners['train']).split('.')[-1]} Alpha : {dir_alpha}")
     log(INFO,f" =>>>>> Ray init args : {ray_init_args} Client Res : {client_res}")
 
-    strategy = get_strategy(config=config_sim,test_data=centralized_testset,save_model_dir=saved_models_path,out_file_path= out_file_path,device=device,apply_transforms_test=apply_transforms_test,size_weights=size_weights)
+    strategy = get_strategy(config=config_sim,test_data=centralized_testset,save_model_dir=saved_models_path,out_file_path= out_file_path,device=device,apply_transforms_test=apply_transforms,size_weights=size_weights)
     server = get_server(strategy = strategy,client_manager=fl.server.client_manager.SimpleClientManager(),out_file_path=out_file_path,target_acc=config_sim['common']['target_acc'])
     
     log(INFO,f" =>>>>> Using Strategy : {strategy.__class__} Server : {server.__class__}")

@@ -103,20 +103,6 @@ class TransformationPipeline:
         ]
         return batch
 
-    def apply_transforms_tiny_imagenet_test(self, batch):
-        """Apply transforms to the partition from FederatedDataset zh-plus/tiny-imagenet."""
-        pytorch_transforms = Compose(
-            [
-                Lambda(
-                    lambda img: img.convert("RGB") if img.mode != "RGB" else img
-                ),  # Convert grayscale to RGB
-                ToTensor(),
-            ]
-        )
-        batch[self.feature_key] = [
-            pytorch_transforms(img) for img in batch[self.feature_key]
-        ]
-        return batch
 
     def apply_transforms_default(self, batch):
         """Apply transforms to the partition from FederatedDataset."""
@@ -130,29 +116,15 @@ class TransformationPipeline:
         ]
         return batch
 
-    def apply_transforms_test(self, batch):
-        """Apply transforms to the partition from FederatedDataset."""
-        pytorch_transforms = Compose(
-            [
-                ToTensor(),
-            ]
-        )
-        batch[self.feature_key] = [
-            pytorch_transforms(img) for img in batch[self.feature_key]
-        ]
-        return batch
 
     def get_transformations(self):
         if self.dataset_name == "cifar10" or self.dataset_name == "cifar100":
-            return self.apply_transforms_cifar10, self.apply_transforms_test
+            return self.apply_transforms_cifar10
         elif self.dataset_name == "sasha/dog-food":
-            return self.apply_transforms_dogfood, self.apply_transforms_dogfood
+            return self.apply_transforms_dogfood
         elif self.dataset_name == "flwrlabs/usps":
-            return self.apply_transforms_usps, self.apply_transforms_usps
+            return self.apply_transforms_usps
         elif self.dataset_name == "zh-plus/tiny-imagenet":
-            return (
-                self.apply_transforms_tiny_imagenet,
-                self.apply_transforms_tiny_imagenet_test,
-            )
+            return self.apply_transforms_tiny_imagenet,
         else:
-            return self.apply_transforms_default, self.apply_transforms_test
+            return self.apply_transforms_default
