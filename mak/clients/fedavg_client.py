@@ -27,7 +27,6 @@ class FedAvgClient(BaseClient):
             config["epochs"],
             config["lr"],
         )
-
         trainloader = DataLoader(self.trainset, batch_size=batch, shuffle=True)
         optimizer = get_optimizer(model=self.model, client_config=config)
         self.train(

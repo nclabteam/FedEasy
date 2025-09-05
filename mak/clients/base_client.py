@@ -3,7 +3,7 @@ import os
 import flwr as fl
 from torch.utils.data import DataLoader
 
-from mak.utils.general import set_params, test
+from mak.utils.general import set_params, test, get_loss
 from mak.utils.helper import get_optimizer
 
 
@@ -48,6 +48,7 @@ class BaseClient(fl.client.NumPyClient):
             config["epochs"],
             config["lr"],
         )
+        
 
         trainloader = DataLoader(self.trainset, batch_size=batch, shuffle=True)
         optimizer = get_optimizer(model=self.model, client_config=config)
@@ -68,12 +69,9 @@ class BaseClient(fl.client.NumPyClient):
         loss, accuracy = self.test(self.model, valloader, device=self.device)
         return float(loss), len(valloader.dataset), {"accuracy": float(accuracy)}
 
-    def get_loss(self, loss):
-        return getattr(__import__("mak.losses", fromlist=[loss]), loss)()
-
     def train(self, net, trainloader, optim, epochs, device: str, config: dict):
         """Train the network on the training set."""
-        criterion = self.get_loss(loss=config["loss"])
+        criterion = get_loss(loss=config["loss"])
         net.train()
 
         for _ in range(epochs):
@@ -86,5 +84,5 @@ class BaseClient(fl.client.NumPyClient):
                 loss.backward()
                 optim.step()
 
-    def test(self, net, testloader, device: str):
-        return test(net=net, testloader=testloader, device=device)
+    def test(self, net, testloader, config: dict, device: str):
+        return test(net=net, testloader=testloader, loss=config["loss"], device=device)

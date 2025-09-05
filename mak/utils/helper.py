@@ -219,8 +219,8 @@ def get_evaluate_fn(
         # Disable tqdm for dataset preprocessing
         disable_progress_bar()
 
-        testloader = DataLoader(testset, batch_size=32)
-        loss, accuracy = test(model, testloader, device=device)
+        testloader = DataLoader(testset, batch_size=config_sim["client"]["test_batch_size"])
+        loss, accuracy = test(model, testloader, loss=config_sim["client"]["loss"], device=device)
         metrics_df = pd.read_csv(metrics_file)
         if metrics_df["loss"].min() > loss:
             log(

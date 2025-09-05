@@ -20,7 +20,7 @@ def get_client_fn(
 
     def client_fn(cid: str) -> fl.client.Client:
         client_dataset = dataset.load_partition(int(cid), "train")
-        client_dataset_splits = client_dataset.train_test_split(test_size=0.15)
+        client_dataset_splits = client_dataset.train_test_split(test_size=config_sim["client"].get("val_percent", 0.15))
         trainset = client_dataset_splits["train"].with_transform(apply_transforms)
         valset = client_dataset_splits["test"].with_transform(apply_transforms)
         return client_class(

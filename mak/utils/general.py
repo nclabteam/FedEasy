@@ -8,9 +8,9 @@ from flwr.common import Metrics
 
 
 # borrowed from Pytorch quickstart example
-def test(net, testloader, device: str):
+def test(net, testloader, loss : str, device: str):
     """Validate the network on the entire test set."""
-    criterion = torch.nn.CrossEntropyLoss()
+    criterion = get_loss(loss=loss)
     correct, loss = 0, 0.0
     net.eval()
     with torch.no_grad():
@@ -19,9 +19,10 @@ def test(net, testloader, device: str):
             x_label, y_label = keys[0], keys[1]
             images, labels = data[x_label].to(device), data[y_label].to(device)
             outputs = net(images)
-            loss += criterion(outputs, labels).item()
+            loss += criterion(outputs, labels).item() * labels.size(0)  # Scale by batch size #MAK added
             _, predicted = torch.max(outputs.data, 1)
             correct += (predicted == labels).sum().item()
+    loss = loss / len(testloader.dataset)  # Normalize by total number of samples #MAK added
     accuracy = correct / len(testloader.dataset)
     return loss, accuracy
 
@@ -43,6 +44,8 @@ def weighted_average(metrics: List[Tuple[int, Metrics]]) -> Metrics:
     # Aggregate and return custom metric (weighted average)
     return {"accuracy": sum(accuracies) / sum(examples)}
 
+def get_loss(loss):
+        return getattr(__import__("mak.losses", fromlist=[loss]), loss)()
 
 def get_unique_classes(dataloader):
     all_labels = []
