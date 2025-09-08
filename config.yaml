@@ -14,12 +14,12 @@ common:
   save_log : True
 
 server:
-  num_rounds : 3
+  num_rounds : 300
   address : 127.0.0.1
   fraction_fit : 0.1
   min_fit_clients: 2
   num_clients : 100  # total number of clients participating in training
-  fraction_evaluate : 0
+  fraction_evaluate : 0.05
   strategy : FedAvg  #[FedLaw, FedProx, FedAvgM, FedOpt, FedAdam, FedMedian, FedAvg, PowD, Scaffold, FedNova]
 
 client:
