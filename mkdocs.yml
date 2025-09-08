@@ -10,6 +10,7 @@ theme:
     - bash
 
 nav:
+  - Home: index.md
   - Installaton & Setup: install.md
   - Configuration: config.md
   - Datasets: datasets.md

@@ -104,6 +104,7 @@ The `client` section contains the configurations for the clients participating i
 - `epochs` : This field specifies the number of epochs for each client's training process.
 - `batch_size` : This field specifies the batch size for each client's training process.
 - `lr` : This field specifies the learning rate for each client's training process.
+- `val_percent` : Percentage of local data used for client validation.
 - `save_train_res` : This field specifies whether to save the training results. If `true`, saves training results (accuracy, loss, time, etc.) to the `out` directory.
 - `total_cpus` : Number of CPU cores assigned for the whole simulation.
 - `total_gpus` : Number of GPUs assigned for the whole simulation.
