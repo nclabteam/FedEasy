@@ -66,7 +66,7 @@ class BaseClient(fl.client.NumPyClient):
     def evaluate(self, parameters, config):
         self.set_parameters(parameters)
         valloader = DataLoader(self.valset, batch_size=self.test_batch_size)
-        loss, accuracy = self.test(self.model, valloader, device=self.device)
+        loss, accuracy = self.test(self.model, valloader, config=config,device=self.device)
         return float(loss), len(valloader.dataset), {"accuracy": float(accuracy)}
 
     def train(self, net, trainloader, optim, epochs, device: str, config: dict):

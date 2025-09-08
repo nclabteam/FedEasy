@@ -7,6 +7,7 @@ from torch.utils.data import DataLoader
 
 from mak.clients.base_client import BaseClient
 from mak.servers.scaffold_server import ScaffoldOptimizer
+from mak.utils.general import get_loss
 
 
 class ScaffoldClient(BaseClient):
@@ -109,7 +110,7 @@ class ScaffoldClient(BaseClient):
         client_cv,
     ):
         """Train the network on the training set for fedprox."""
-        criterion = self.get_loss(loss=config["loss"])
+        criterion = get_loss(loss=config["loss"])
         global_params = [val.detach().clone() for val in net.parameters()]
         net.train()
 

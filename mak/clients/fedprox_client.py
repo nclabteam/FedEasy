@@ -1,6 +1,7 @@
 import torch
 
 from mak.clients.base_client import BaseClient
+from mak.utils.general import get_loss
 
 
 class FedProxClient(BaseClient):
@@ -21,7 +22,7 @@ class FedProxClient(BaseClient):
 
     def train(self, net, trainloader, optim, epochs, device: str, config: dict):
         """Train the network on the training set for fedprox."""
-        criterion = self.get_loss(loss=config["loss"])
+        criterion = get_loss(loss=config["loss"])
 
         global_params = [val.detach().clone() for val in net.parameters()]
         net.train()

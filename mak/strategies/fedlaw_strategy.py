@@ -45,6 +45,7 @@ class FedLaw(fl.server.strategy.FedAvg):
         config,
         device="cpu",
         on_fit_config_fn=None,
+        on_evaluate_config_fn=None,
         **kwargs
     ) -> None:
         super().__init__(
@@ -55,6 +56,7 @@ class FedLaw(fl.server.strategy.FedAvg):
             min_available_clients=min_available_clients,
             evaluate_fn=evaluate_fn,
             on_fit_config_fn=on_fit_config_fn,
+            on_evaluate_config_fn=on_evaluate_config_fn,
         )
 
         self.model = model
@@ -62,6 +64,7 @@ class FedLaw(fl.server.strategy.FedAvg):
         self.fraction_fit = fraction_fit
         self.evaluate_fn = evaluate_fn
         self.on_fit_config_fn = on_fit_config_fn
+        self.on_evaluate_config_fn = on_evaluate_config_fn
         self.evaluate_metrics_aggregation_fn = evaluate_metrics_aggregation_fn
         self.apply_transforms = apply_transforms_test
         self.device = device

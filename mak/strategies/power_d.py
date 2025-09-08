@@ -22,6 +22,7 @@ class PowD(fl.server.strategy.FedAvg):
         min_available_clients: int,
         evaluate_fn,
         on_fit_config_fn,
+        on_evaluate_config_fn,
         candidate_client_set,  # d parameter for power of selection
         **kwargs,
     ) -> None:
@@ -33,10 +34,13 @@ class PowD(fl.server.strategy.FedAvg):
             min_available_clients=min_available_clients,
             evaluate_fn=evaluate_fn,
             on_fit_config_fn=on_fit_config_fn,
+            on_evaluate_config_fn=on_evaluate_config_fn,
         )
 
         # sample size for random selection
         self.d_choice = candidate_client_set
+        self.on_evaluate_config_fn = on_evaluate_config_fn
+
 
     def __repr__(self) -> str:
         return "Pow-D"

@@ -379,6 +379,7 @@ def get_strategy(
         },
         "PowD": {
             "candidate_client_set": config["powd_config"]["candidate_client_set"],
+            'loss': config['client']['loss'],
         },
     }
 
@@ -398,6 +399,7 @@ def get_strategy(
         ),
         evaluate_metrics_aggregation_fn=weighted_average,
         on_fit_config_fn=get_fit_config_fn(config_sim=config),
+        on_evaluate_config_fn=get_fit_config_fn(config_sim=config),
         initial_parameters=fl.common.ndarrays_to_parameters(
             [val.cpu().numpy() for _, val in model.state_dict().items()]
         ),
