@@ -79,6 +79,9 @@ class BaseClient(fl.client.NumPyClient):
                 keys = list(batch.keys())
                 x_label, y_label = keys[0], keys[1]
                 images, labels = batch[x_label].to(device), batch[y_label].to(device)
+                # Skip batches that have only one sample (BatchNorm can't handle these)
+                if images.size(0) == 1:
+                    continue
                 optim.zero_grad()
                 loss = criterion(net(images), labels)
                 loss.backward()
