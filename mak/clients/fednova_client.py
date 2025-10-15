@@ -53,7 +53,8 @@ class FedNovaClient(BaseClient):
         """Train the network on the training set for fedprox."""
         criterion = get_loss(loss=config["loss"])
 
-        global_params = [val.detach().clone() for val in net.parameters()]
+        # global_params = [val.detach().clone() for val in net.parameters()]
+        global_state = {k: v.detach().clone() for k, v in net.state_dict().items()}
         net.train()
         local_steps = 0
 
@@ -77,10 +78,10 @@ class FedNovaClient(BaseClient):
             - (self.momentum * (1 - self.momentum**local_steps) / (1 - self.momentum))
         ) / (1 - self.momentum)
         # compute g_i
+        current_state = net.state_dict()
         g_i = [
-            torch.div(prev_param - param.detach(), a_i)
-            for prev_param, param in zip(global_params, net.parameters())
+            torch.div(global_state[k] - current_state[k].detach(), a_i)
+            for k in global_state.keys()
         ]
 
         return a_i, g_i
-        # return total_loss  # total_loss / epochs
