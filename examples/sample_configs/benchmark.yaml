@@ -47,3 +47,6 @@ fedprox:
 
 powd_config:
   candidate_client_set: 20 # the d parameter (client fraction ≤ d ≤ total clients)
+
+fedtvd:
+  balance_lambda : 0.5 # Weight for balancing label quality vs. dataset size (lambda in paper)

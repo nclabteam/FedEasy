@@ -44,4 +44,5 @@ fedlaw_config:
 fedprox:
   proximal_mu : 0.5
 
-
+fedtvd:
+  balance_lambda : 0.5 # Weight for balancing label quality vs. dataset size (lambda in paper)
