@@ -5,6 +5,8 @@ from typing import List, Tuple
 import flwr as fl
 import torch
 from flwr.common import Metrics
+from io import BytesIO
+import numpy as np
 
 
 # borrowed from Pytorch quickstart example
@@ -84,3 +86,13 @@ def random_pertube(model, gamma):
                 p.add_(e_w)
 
     return new_model
+
+def marshal_numpy(data: np.ndarray) -> bytes:
+    np_bytes = BytesIO()
+    np.savez(np_bytes, *data)
+    return np_bytes.getvalue()
+
+def unmarshal_numpy(data: bytes) -> np.ndarray:
+    np_bytes = BytesIO(data)
+    array = np.load(np_bytes).values()
+    return array
