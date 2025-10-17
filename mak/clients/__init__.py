@@ -5,6 +5,7 @@ from mak.clients.fedavg_client import FedAvgClient
 from mak.clients.fednova_client import FedNovaClient
 from mak.clients.fedprox_client import FedProxClient
 from mak.clients.scaffold_client import ScaffoldClient
+from mak.clients.fedtvd_client import FedTVDClient
 
 
 def get_client_fn(
@@ -43,5 +44,7 @@ def get_client_class(strategy: str):
         return ScaffoldClient
     elif strategy == "fednova":
         return FedNovaClient
+    elif strategy == "fedtvd":
+        return FedTVDClient
     else:
         return FedAvgClient

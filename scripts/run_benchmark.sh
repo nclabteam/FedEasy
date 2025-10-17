@@ -1,14 +1,15 @@
 #!/bin/bash
 
-CONFIG_FILE="./examples/sample_configs/benchmark.yaml"
+# CONFIG_FILE="./examples/sample_configs/benchmark.yaml"
+CONFIG_FILE="./config.yaml"
 
 # Define the list of algorithms
-algorithms=(FedAvg FedProx FedAvgM FedNova Scaffold FedMedian FedAdam FedOpt FedLaw PowD)
+algorithms=(FedTVD FedAvg)
 
 # Define the list of seed values
 seeds=(123 456 8911)
 
-alphas=(0.1 0.5 100)
+alphas=(0.5)
 
 # Loop through each algorithm
 for alpha in "${alphas[@]}"

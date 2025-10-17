@@ -4,9 +4,9 @@
 common:
   data_type : dirichlet_niid # data_type = data distribution one among ['iid','dirichlet_niid']
   dataset : cifar10 # data_set = data set used  one among ['cifar10', 'cifar100', 'mnist', 'fashion_mnist', 'sasha/dog-food', 'zh-plus/tiny-imagenet', 'Mike0307/MNIST-M', 'flwrlabs/usps']
-  dirichlet_alpha : 10 #dirichlet concentration parameter (only used if data_type is dirchlet-niid)
+  dirichlet_alpha : 0.5 #dirichlet concentration parameter (only used if data_type is dirchlet-niid)
   target_acc : 0.95
-  model : ConvNet # one among [ ConvNet, Net, CifarNet, SimpleCNN, KerasExpCNN, MNISTCNN, SimpleDNN, FMCNNModel,FedAVGCNN,Resnet18, Resnet34,ResNet18Pretrained, ResNet34Pretrained,ResNet18Small, ResNet20Small,MobileNetV2,EfficientNetB0,LSTMModel]
+  model : Resnet18 # one among [ ConvNet, Net, CifarNet, SimpleCNN, KerasExpCNN, MNISTCNN, SimpleDNN, FMCNNModel,FedAVGCNN,Resnet18, Resnet34,ResNet18Pretrained, ResNet34Pretrained,ResNet18Small, ResNet20Small,MobileNetV2,EfficientNetB0,LSTMModel]
   optimizer : sgd # one among [sgd,adam]
   sgd_momentum : 0.9
   seed : 123  #123 456 8911
@@ -19,8 +19,8 @@ server:
   fraction_fit : 0.1
   min_fit_clients: 2
   num_clients : 100  # total number of clients participating in training
-  fraction_evaluate : 0.05
-  strategy : FedAvg  #[FedLaw, FedProx, FedAvgM, FedOpt, FedAdam, FedMedian, FedAvg, PowD, Scaffold, FedNova]
+  fraction_evaluate : 0.0
+  strategy : FedTVD  #[FedLaw, FedProx, FedAvgM, FedOpt, FedAdam, FedMedian, FedAvg, PowD, Scaffold, FedNova]
 
 client:
   loss: CrossEntropyLoss # [CrossEntropyLoss, FocalLoss]
@@ -47,3 +47,6 @@ fedprox:
 
 powd_config:
   candidate_client_set: 20 # the d parameter (client fraction ≤ d ≤ total clients)
+
+fedtvd:
+  balance_lambda : 0.5 # Weight for balancing label quality vs. dataset size (lambda in paper)

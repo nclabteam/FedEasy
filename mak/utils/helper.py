@@ -26,7 +26,6 @@ import mak.strategies
 from mak.servers.custom_server import ServerSaveData
 from mak.servers.fednova_server import FedNovaServer
 from mak.strategies.fednova_strategy import FedNovaStrategy
-from mak.strategies.scaffold_strategy import ScaffoldStrategy
 from mak.utils.dataset_info import dataset_info
 from mak.utils.general import set_params, test, weighted_average
 
@@ -372,6 +371,9 @@ def get_strategy(
         "PowD": {
             "candidate_client_set": config["powd_config"]["candidate_client_set"],
             'loss': config['client']['loss'],
+        },
+        "FedTVD": {
+            "balance_lambda": config["fedtvd"]["balance_lambda"],
         },
     }
 

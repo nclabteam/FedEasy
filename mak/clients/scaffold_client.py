@@ -7,7 +7,6 @@ from flwr.common import Scalar
 from torch.utils.data import DataLoader
 
 from mak.clients.base_client import BaseClient
-from mak.servers.scaffold_server import ScaffoldOptimizer
 from mak.utils.general import get_loss, unmarshal_numpy, marshal_numpy
 from mak.utils.helper import get_optimizer
 
