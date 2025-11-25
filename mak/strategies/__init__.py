@@ -4,3 +4,4 @@ from mak.strategies.fednova_strategy import FedNovaStrategy as FedNova
 from mak.strategies.power_d import PowD
 from mak.strategies.scaffold_strategy import ScaffoldStrategy as Scaffold
 from mak.strategies.fedtvd_strategy import FedTVDStrategy as FedTVD
+from mak.strategies.fedlbw_strategy import FedLBWStrategy as FedLBW

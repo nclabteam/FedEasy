@@ -368,6 +368,13 @@ def get_strategy(
             "apply_transforms": apply_transforms_test,
             "apply_transforms_test": apply_transforms_test,
         },
+        "FedLBW": {
+            "config": config,
+            "model": model,
+            "test_data": test_data,
+            "apply_transforms": apply_transforms_test,
+            "apply_transforms_test": apply_transforms_test,
+        },
         "PowD": {
             "candidate_client_set": config["powd_config"]["candidate_client_set"],
             'loss': config['client']['loss'],

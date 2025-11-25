@@ -20,7 +20,7 @@ server:
   min_fit_clients: 2
   num_clients : 100  # total number of clients participating in training
   fraction_evaluate : 0.0
-  strategy : FedTVD  #[FedLaw, FedProx, FedAvgM, FedOpt, FedAdam, FedMedian, FedAvg, PowD, Scaffold, FedNova]
+  strategy : FedLBW  #[FedLaw, FedProx, FedAvgM, FedOpt, FedAdam, FedMedian, FedAvg, PowD, Scaffold, FedNova, FedTVD, FedLBW]
 
 client:
   loss: CrossEntropyLoss # [CrossEntropyLoss, FocalLoss]
