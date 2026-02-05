@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+
 # C extensions
 *.so
 
@@ -167,5 +168,7 @@ dataset/
 *.txt
 *.sh
 !code_formatting.sh
-./config.yaml
-config.yaml
+/config.yaml
+.vscode/
+/results.csv
+/analysis.py
