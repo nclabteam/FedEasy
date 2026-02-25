@@ -6,7 +6,7 @@ common:
   dataset : cifar10 # data_set = data set used  one among ['cifar10', 'cifar100', 'mnist', 'fashion_mnist', 'sasha/dog-food', 'zh-plus/tiny-imagenet', 'Mike0307/MNIST-M', 'flwrlabs/usps']
   dirichlet_alpha : 0.1 #dirichlet concentration parameter (only used if data_type is dirchlet-niid)
   target_acc : 0.95
-  model : FedNet # one among [ ConvNet, Net, CifarNet, SimpleCNN, KerasExpCNN, MNISTCNN, SimpleDNN, FMCNNModel,FedAVGCNN,Resnet18, Resnet34,ResNet18Pretrained, ResNet34Pretrained,ResNet18Small, ResNet20Small,MobileNetV2,EfficientNetB0,LSTMModel]
+  model : ConvNet # one among [ ConvNet, Net, CifarNet, SimpleCNN, KerasExpCNN, MNISTCNN, SimpleDNN, FMCNNModel,FedAVGCNN,Resnet18, Resnet34,ResNet18Pretrained, ResNet34Pretrained,ResNet18Small, ResNet20Small,MobileNetV2,EfficientNetB0,LSTMModel]
   optimizer : sgd # one among [sgd,adam]
   sgd_momentum : 0.9
   seed : 0  #123 456 8911
@@ -14,13 +14,13 @@ common:
   save_log : True
 
 server:
-  num_rounds : 3
+  num_rounds : 11
   address : 127.0.0.1
-  fraction_fit : 1.0
+  fraction_fit : 0.5
   min_fit_clients: 2
-  num_clients : 5  # total number of clients participating in training
+  num_clients : 20  # total number of clients participating in training
   fraction_evaluate : 0.0
-  strategy : FedFisher  #[FedLaw, FedProx, FedAvgM, FedOpt, FedAdam, FedMedian, FedAvg, PowD, Scaffold, FedNova, FedTVD, FedLBW]
+  strategy : FedAvg  #[FedLaw, FedProx, FedAvgM, FedOpt, FedAdam, FedMedian, FedAvg, PowD, Scaffold, FedNova, FedTVD, FedLBW]
 
 client:
   loss: CrossEntropyLoss # [CrossEntropyLoss, FocalLoss]
@@ -34,7 +34,7 @@ client:
   total_gpus : 1 # no. of GPU's assigned for whole simulation
   gpu : True  # True or False, Use GPU for training or not.
   num_cpus : 2  # no. of CPU cores that are assigned for each actor
-  num_gpus : 0.2 #  no. of GPU that are assigned for each actor (it can be fraction value as well)
+  num_gpus : 0.1 #  no. of GPU that are assigned for each actor (it can be fraction value as well)
 
 fedlaw_config:
   server_funct : 'exp' #['exp' or 'quad'] #currently exp only is implemented
